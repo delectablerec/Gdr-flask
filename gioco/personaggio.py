@@ -1,0 +1,107 @@
+from utils.log import Log
+# serve per random.randint nei metodi attacca
+import random
+from utils.salvataggio import SerializableMixin
+@SerializableMixin.register_class
+class Personaggio(SerializableMixin):
+    """
+    Classe Padre per tutte classi
+    Contiene le proprietà comuni a ogni classe (Mago, Ladro, Guerriero)
+    """
+    def __init__(self, nome: str) -> None:
+        self.nome = nome
+        self.salute = 100
+        self.salute_max = 200
+        self.attacco_min = 5
+        self.attacco_max = 80
+        self.storico_danni_subiti = []
+        self.livello = 1
+
+    def attacca(self, bersaglio: 'Personaggio', mod_ambiente: int = 0) -> None:
+        """
+        Metodo di attacco di cui viene fatto l'override in ogni
+        classe derivata da personaggio.
+
+        Args:
+            bersaglio (Personaggio): bersaglio dell'attacco
+            mod_ambiente (int): modificatore di attacco in base all'ambiente
+
+        Returns:
+            None
+        """
+        danno = random.randint(self.attacco_min, (self.attacco_max + mod_ambiente)) 
+        testo = f"{self.nome} attacca {bersaglio.nome} per {danno} punti!"
+        print(testo)
+        Log.scrivi_log(testo)
+        bersaglio.subisci_danno(danno)
+
+    def subisci_danno(self, danno: int) -> None:
+        """
+        Sottrae il danno (Input) alla salute del personaggio.
+
+        Args:
+            danno (int): danno subito dal personaggio
+
+        Returns:
+            None
+        """
+        self.salute = max(0, self.salute - danno)
+        self.storico_danni_subiti.append(danno)
+        testo = f"Salute di {self.nome}: {self.salute}\n"
+        print(testo)
+        Log.scrivi_log(testo)
+
+    def sconfitto(self) -> bool:
+        """
+        Verifica se il personaggio è sceso a zero di salute.
+
+        Args:
+            None
+
+        Returns:
+            bool: True se il personaggio è sconfitto, in caso contrario False
+        """
+        return self.salute <= 0
+
+    def recupera_salute(self, mod_ambiente: int = 0) -> None:
+        """
+        Recupera la salute del personaggio del 30% della salute corrente.
+        Viene usato da pozioni e dal recupero salute post duello.
+
+        Args:
+            mod_ambiente (int): modificatore di recupero in base all'ambiente
+
+        Returns:
+            None
+        """
+        if self.salute == 100:
+            testo = f"{self.nome} ha già la salute piena."
+            print(testo)
+            Log.scrivi_log(testo)
+            return
+        recupero = int(self.salute * 0.3) + mod_ambiente
+        nuova_salute = min(self.salute + recupero, 100)
+        effettivo = nuova_salute - self.salute
+        self.salute = nuova_salute
+        testo = f"\n{self.nome} recupera {effettivo} HP. Salute attuale: {self.salute}"
+        print(testo)
+        Log.scrivi_log(testo)
+
+    def migliora_statistiche(self) -> None:
+        """
+        Metodo per aumentare il livello del personaggio e quindi
+        migliorarne le statistiche.
+        Aumenta del 2% l'attacco massimo e dell'1% la salute massima.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
+        self.livello += 1
+        self.attacco_max += 0.02 * self.attacco_max
+        self.salute_max += 0.01 * self.salute_max
+        testo = f"{self.nome} è salito al livello {self.livello}!"
+        print(testo)
+        Log.scrivi_log(testo)

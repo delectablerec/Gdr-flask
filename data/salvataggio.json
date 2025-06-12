@@ -1,0 +1,195 @@
+{
+    "personaggi": [
+        {
+            "__class__": "Ladro",
+            "nome": "1",
+            "salute": 64,
+            "salute_max": 200,
+            "attacco_min": 5,
+            "attacco_max": 80,
+            "storico_danni_subiti": [
+                76
+            ],
+            "livello": 1
+        }
+    ],
+    "inventari": [
+        {
+            "__class__": "Inventario",
+            "oggetti": [
+                {
+                    "__class__": "PozioneCura",
+                    "nome": "Pozione Rossa",
+                    "usato": false,
+                    "offensivo": false,
+                    "valore": 30
+                }
+            ],
+            "proprietario": {
+                "__class__": "Ladro",
+                "nome": "1",
+                "salute": 64,
+                "salute_max": 200,
+                "attacco_min": 5,
+                "attacco_max": 80,
+                "storico_danni_subiti": [
+                    76
+                ],
+                "livello": 1
+            }
+        }
+    ],
+    "gestore_missioni": {
+        "__class__": "GestoreMissioni",
+        "lista_missioni": [
+            {
+                "__class__": "Missione",
+                "nome": "Imboscata",
+                "ambiente": {
+                    "__class__": "Foresta",
+                    "nome": "Foresta",
+                    "modifica_attacco": 5,
+                    "modifica_cura": 5
+                },
+                "nemici": [
+                    {
+                        "__class__": "Guerriero",
+                        "nome": "Robin Hood",
+                        "salute": 120,
+                        "salute_max": 200,
+                        "attacco_min": 5,
+                        "attacco_max": 80,
+                        "storico_danni_subiti": [],
+                        "livello": 1
+                    },
+                    {
+                        "__class__": "Guerriero",
+                        "nome": "Little Jhon",
+                        "salute": 120,
+                        "salute_max": 200,
+                        "attacco_min": 5,
+                        "attacco_max": 80,
+                        "storico_danni_subiti": [],
+                        "livello": 1
+                    }
+                ],
+                "premi": [
+                    {
+                        "__class__": "PozioneCura",
+                        "nome": "Pozione Rossa",
+                        "usato": false,
+                        "offensivo": false,
+                        "valore": 30
+                    },
+                    {
+                        "__class__": "PozioneCura",
+                        "nome": "Pozione Rossa",
+                        "usato": false,
+                        "offensivo": false,
+                        "valore": 30
+                    },
+                    {
+                        "__class__": "BombaAcida",
+                        "nome": "Bomba Acida",
+                        "usato": false,
+                        "offensivo": true,
+                        "danno": 30
+                    }
+                ],
+                "completata": false,
+                "attiva": true
+            },
+            {
+                "__class__": "Missione",
+                "nome": "Salva la principessa",
+                "ambiente": {
+                    "__class__": "Palude",
+                    "nome": "Palude",
+                    "modifica_attacco": -5,
+                    "modifica_cura": 0
+                },
+                "nemici": [
+                    {
+                        "__class__": "Ladro",
+                        "nome": "Megera furfante",
+                        "salute": 140,
+                        "salute_max": 200,
+                        "attacco_min": 5,
+                        "attacco_max": 80,
+                        "storico_danni_subiti": [],
+                        "livello": 1
+                    }
+                ],
+                "premi": [
+                    {
+                        "__class__": "Medaglione",
+                        "nome": "Medaglione",
+                        "usato": false,
+                        "offensivo": false
+                    }
+                ],
+                "completata": false,
+                "attiva": false
+            },
+            {
+                "__class__": "Missione",
+                "nome": "Sgomina il culto di Graz'zt sul vulcano Gheemir",
+                "ambiente": {
+                    "__class__": "Vulcano",
+                    "nome": "Vulcano",
+                    "modifica_attacco": 10,
+                    "modifica_cura": -5
+                },
+                "nemici": [
+                    {
+                        "__class__": "Mago",
+                        "nome": "Cultista1",
+                        "salute": 80,
+                        "salute_max": 200,
+                        "attacco_min": 5,
+                        "attacco_max": 80,
+                        "storico_danni_subiti": [],
+                        "livello": 1
+                    },
+                    {
+                        "__class__": "Mago",
+                        "nome": "Cultista2",
+                        "salute": 80,
+                        "salute_max": 200,
+                        "attacco_min": 5,
+                        "attacco_max": 80,
+                        "storico_danni_subiti": [],
+                        "livello": 1
+                    },
+                    {
+                        "__class__": "Mago",
+                        "nome": "Cultista3",
+                        "salute": 80,
+                        "salute_max": 200,
+                        "attacco_min": 5,
+                        "attacco_max": 80,
+                        "storico_danni_subiti": [],
+                        "livello": 1
+                    }
+                ],
+                "premi": [
+                    {
+                        "__class__": "PozioneCura",
+                        "nome": "Pozione Rossa",
+                        "usato": false,
+                        "offensivo": false,
+                        "valore": 30
+                    },
+                    {
+                        "__class__": "Medaglione",
+                        "nome": "Medaglione",
+                        "usato": false,
+                        "offensivo": false
+                    }
+                ],
+                "completata": false,
+                "attiva": false
+            }
+        ]
+    }
+}
