@@ -1,0 +1,45 @@
+<!-- templates/create_char.html -->
+{% extends "layout.html" %}
+{% block title %}Crea Personaggi{% endblock %}
+
+{% block content %}
+<h2>Crea la tua compagnia (fino a 3 personaggi)</h2>
+<form method="post">
+  {% for i in range(1, 4) %}
+    <fieldset class="border p-3 mb-3">
+      <legend class="w-auto">Personaggio {{ i }}</legend>
+      <div class="mb-3">
+        <label for="pg{{ i }}_nome" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="pg{{ i }}_nome" name="pg{{ i }}_nome"
+               placeholder="Lascia vuoto per saltare" value="{{ request.form.get('pg' ~ i ~ '_nome','') }}">
+      </div>
+      <div class="mb-3">
+        <label for="pg{{ i }}_classe" class="form-label">Classe</label>
+        <select class="form-select" id="pg{{ i }}_classe" name="pg{{ i }}_classe">
+          <option value="" disabled selected>Seleziona una classe</option>
+          {% for cls in classi %}
+            <option value="{{ cls }}"
+              {% if request.form.get('pg' ~ i ~ '_classe') == cls %}selected{% endif %}>
+              {{ cls }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="gift_{{ i }}" class="form-label">Oggetto iniziale</label>
+        <select class="form-select" id="gift_{{ i }}" name="gift_{{ i }}">
+          <option value="" selected>— Nessuno —</option>
+          {% for gift in gifts %}
+            <option value="{{ gift }}"
+              {% if request.form.get('gift_' ~ i) == gift %}selected{% endif %}>
+              {{ gift }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    </fieldset>
+  {% endfor %}
+
+  <button type="submit" class="btn btn-success">Crea Compagnia</button>
+</form>
+{% endblock %}
