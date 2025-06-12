@@ -56,3 +56,11 @@ def select_mission():
 
     missioni = MissioneFactory.get_opzioni()
     return render_template('select_mission.html', missioni=missioni)
+
+
+# Carica gioco: form per caricare la compagnia e lo scontro precedente
+@gioco.route('/load-game', methods=['GET', 'POST'])
+def load_game():
+    if request.method == 'POST':
+        # carica i dati dal file salvato
+        mp = MenuPrincipale.carica_salvataggio()

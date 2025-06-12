@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Menu iniziale{% endblock %}
+
+{% block content %}
+<h2>Benvenuto nel gioco GDR</h2>
+<p>Seleziona un'opzione per iniziare.</p>
+<div class="d-grid gap-2 col-6 mx-auto">
+    <a href="{{ url_for('create_char') }}" class="btn btn-primary btn-lg mb-2">Crea Personaggi</a>
+    <a href="{{ url_for('load_game') }}" class="btn btn-secondary btn-lg">Carica Gioco</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
