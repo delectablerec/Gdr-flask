@@ -32,7 +32,7 @@ class Compagnia:
             Log.scrivi_log(testo)
         else:
             testo = f"{personaggio.nome} non è presente nella compagnia."
-
+            Log.scrivi_log(testo)
 
     def mostra_inventari(self) -> None:
         testo = ("\n=== Inventari della compagnia ===")
@@ -42,6 +42,7 @@ class Compagnia:
             Log.scrivi_log(testo)
             for oggetto in inventario.oggetti:
                 testo = f" - {oggetto.nome}"
+                Log.scrivi_log(testo)
 
     def get_inventari(self) -> list[Inventario]:
         return [inventario for personaggio, inventario in self.personaggi_inventari]
