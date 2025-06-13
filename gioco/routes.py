@@ -56,3 +56,35 @@ def select_mission():
 
     missioni = MissioneFactory.get_opzioni()
     return render_template('select_mission.html', missioni=missioni)
+
+
+# Seleziona l'inventario della partita
+@gioco.route('/inventory', methods=['GET', 'POST'])
+def show_inventary(nome_personaggio):
+    if 'compagnia' not in session:
+        return redirect(url_for('gioco.new_game'))
+
+    mp = MenuPrincipale.from_dict(session['compagnia'])
+    personaggi_inventari = mp.personaggi_inventari
+
+    # Assegnazione di valori di controllo
+    personaggio = None
+    inventario = None
+
+    for pg, inv in personaggi_inventari:
+        if pg.nome == nome_personaggio:
+            personaggio = pg
+            inventario = inv
+            break
+
+    if not personaggio:
+        redirect(url_for('gioco.new_game'))
+
+    lista_pg = [pg.to_dict() for pg, _ in personaggi_inventari]
+    lista_oggetti = [oggetto.to_dict() for oggetto in personaggio.inventario]
+
+    return render_template('inventary.html',
+                            personaggio=personaggio.to_dict(),
+                            inventario=inventario,
+                            lista_pg=lista_pg,
+                            lista_oggetti=lista_oggetti)
