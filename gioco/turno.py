@@ -2,7 +2,7 @@ import random
 from gioco.ambiente import Ambiente
 from gioco.inventario import Inventario
 from utils.interfaccia import InterfacciaUtente as I_U # Da modificare
-from gioco.strategy_patterns import StrategiaAttacco # Da modificare.strategy_patterns sarà in strategy?
+from gioco.strategy import StrategiaAttacco
 from gioco.personaggio import Personaggio
 from gioco.classi import Guerriero, Mago, Ladro
 from utils.salvataggio import SerializableMixin
@@ -436,7 +436,7 @@ class Turno(SerializableMixin):
     @classmethod
     def from_dict(cls, data: dict) -> "Turno":
         from gioco.inventario import Inventario
-        from gioco.strategy_patterns import StrategiaAttacco
+        from gioco.strategy import StrategiaAttacco
         from gioco.personaggio import Personaggio
         from gioco.ambiente import Ambiente
 
