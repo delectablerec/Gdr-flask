@@ -1,0 +1,17 @@
+
+{% extends "layout.html" %}
+{% block title %}Crea Personaggi{% endblock %}
+
+{% block content %}
+
+    <h1>Benvenuto!</h1>
+     {% for opzione in opzioni %}
+        <form 
+            action="{% if opzione.valore == '1' %}{{ url_for('gioco.new_game') }}{% else %}{{ url_for('gioco.load_game') }}{% endif %}" 
+            method="{% if opzione.valore == '1' %}get{% else %}post{% endif %}">
+            <button type="submit">{{ opzione.valore }}: {{ opzione.etichetta }}</button>
+        </form>
+    {% endfor %}
+
+
+{% endblock %}

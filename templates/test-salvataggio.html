@@ -1,0 +1,63 @@
+
+{% extends "layout.html" %}
+{% block title %}Crea Personaggi{% endblock %}
+
+{% block content %}
+
+    <h1>Stato del Gioco</h1>
+
+    <!-- Personaggi e Inventari -->
+    {% for personaggio, inventario in personaggi %}
+    <section>
+        <h2>Personaggio: {{ personaggio.nome }}</h2>
+        <p>Salute: {{ personaggio.salute }}/{{ personaggio.salute_max }}</p>
+        <p>Attacco: {{ personaggio.attacco_min }}–{{ personaggio.attacco_max }}</p>
+        <p>Livello: {{ personaggio.livello }}</p>
+
+        <h3>Inventario</h3>
+        <ul>
+            {% for oggetto in inventario.oggetti %}
+                <li>{{ oggetto.nome }} - {% if oggetto.offensivo %}Offensivo{% else %}Curativo{% endif %}</li>
+            {% else %}
+                <li>(Nessun oggetto)</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endfor %}
+
+    <!-- Missioni attive -->
+    <section>
+        <h2>Missioni Attive</h2>
+        <ul>
+            {% for missione in gestore_missioni.lista_missioni %}
+                {% if missione.attiva %}
+                    <li>
+                        <strong>{{ missione.nome }}</strong> in <em>{{ missione.ambiente.nome }}</em>
+                        <div>
+                            <strong>Nemici:</strong>
+                            <ul>
+                                {% for nemico in missione.nemici %}
+                                    <li>{{ nemico.__class__.__name__ }}: {{ nemico.nome }} ({{ nemico.salute }}/{{ nemico.salute_max }})</li>
+                                {% else %}
+                                    <li>(Nessun nemico)</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>Premi:</strong>
+                            <ul>
+                                {% for premio in missione.premi %}
+                                    <li>{{ premio.nome }}</li>
+                                {% else %}
+                                    <li>(Nessun premio)</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                {% endif %}
+            {% else %}
+                <li>(Nessuna missione attiva)</li>
+            {% endfor %}
+        </ul>
+    </section>
+{% endblock %}

@@ -1,17 +1,20 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from gioco.menu_principale import MenuPrincipale
-from gioco.missione import MissioneFactory
-from gioco.ambiente import AmbienteFactory
+from gioco.missione import GestoreMissioni
+from gioco.ambiente import Ambiente
 from gioco.scontro import Scontro
-
+from gioco.compagnia import Compagnia
+from utils.salvataggio import Json, SerializableMixin
+import os
 gioco = Blueprint('gioco', __name__, template_folder='../templates')
 
 # Home / menu principale
 @gioco.route('/')
 def index():
-    return render_template('menu.html')
-
-
+    opzioni = [{"valore": "1", "etichetta": "Nuovo Gioco"}]
+    if os.path.exists("data/salvataggio.json"):
+        opzioni.append({"valore": "2", "etichetta": "Carica Gioco Salvato"})
+    return render_template("menu.html", opzioni=opzioni)
 # Nuovo gioco: form per creare la compagnia (1-3 PG)
 @gioco.route('/new-game', methods=['GET', 'POST'])
 def new_game():
@@ -56,3 +59,13 @@ def select_mission():
 
     missioni = MissioneFactory.get_opzioni()
     return render_template('select_mission.html', missioni=missioni)
+
+@gioco.route('/gioco', methods=['POST'])
+def load_game():
+    dati = MenuPrincipale()
+    dati.carica_salvataggio()
+    return render_template(
+        "test-salvataggio.html",
+        personaggi=dati.personaggi_inventari,
+        gestore_missioni=dati.gestore_missioni
+    )
