@@ -196,29 +196,29 @@ class GestoreMissioni(SerializableMixin):
         Json.scrivi_dati("data/salvataggio.json",Json.applica_patch(self.to_dict()))
         return esito
 
-    def sorteggia(self)-> Missione | None:
-        """
-        Sorteggia una missione a caso tra quelle non completate in missioni e
-        la ritorna , se non ci sono missioni non copletate ritorna False.
+    # def sorteggia(self)-> Missione | None:
+    #     """
+    #     Sorteggia una missione a caso tra quelle non completate in missioni e
+    #     la ritorna , se non ci sono missioni non copletate ritorna False.
 
-        Args:
-            None
+    #     Args:
+    #         None
 
-        Returns:
-            Missione | None: Ritorna un'istanza di Missione non completata
-            o None se il GestoreMissioni ha solo missioni completate
-        """
-        for missione in self.lista_missioni :
-            if missione.attiva:
-                return missione
-        try:
-            random.shuffle(self.lista_missioni)
-            for missione in self.lista_missioni :
-                if not missione.completata :
-                    missione.attiva = True
-                    return missione
-            # Se non ci sono missioni che non siano state completate
-            raise ValueError("Non ci sono missioni non completate ")
-        except ValueError as e :
-            Log.scrivi_log(str(e))
-            return None
+    #     Returns:
+    #         Missione | None: Ritorna un'istanza di Missione non completata
+    #         o None se il GestoreMissioni ha solo missioni completate
+    #     """
+    #     for missione in self.lista_missioni :
+    #         if missione.attiva:
+    #             return missione
+    #     try:
+    #         random.shuffle(self.lista_missioni)
+    #         for missione in self.lista_missioni :
+    #             if not missione.completata :
+    #                 missione.attiva = True
+    #                 return missione
+    #         # Se non ci sono missioni che non siano state completate
+    #         raise ValueError("Non ci sono missioni non completate ")
+    #     except ValueError as e :
+    #         Log.scrivi_log(str(e))
+    #         return None
