@@ -1,0 +1,18 @@
+<h2>Inventario di {{ personaggio.nome }}</h2>
+
+{% if oggetti %}
+    <ul>
+    {% for obj in oggetti %}
+        <li>{{ obj.nome }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>L'inventario è vuoto.</p>
+{% endif %}
+
+<h3>Altri membri della compagnia:</h3>
+<ul>
+    {% for pg in tutti_personaggi %}
+        <li>{{ pg.nome }} ({{ pg.__class__.__name__ }})</li>
+    {% endfor %}
+</ul>
