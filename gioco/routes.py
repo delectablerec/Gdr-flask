@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
-from gioco.menu_principale import MenuPrincipale
+
 from gioco.missione import MissioneFactory
 from gioco.ambiente import AmbienteFactory
 from gioco.scontro import Scontro
+from gioco.menu_principale import MenuPrincipale
 
 gioco = Blueprint('gioco', __name__, template_folder='../templates')
 
