@@ -1,8 +1,16 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
-from gioco.menu_principale import MenuPrincipale
-from gioco.missione import MissioneFactory
-from gioco.ambiente import AmbienteFactory
-from gioco.scontro import Scontro
+<<<<<<< HEAD
+#from gioco.menu_principale import MenuPrincipale
+#from gioco.missione import MissioneFactory
+#from gioco.ambiente import AmbienteFactory
+#from gioco.scontro import Scontro
+=======
+
+# from gioco.missione import MissioneFactory
+# from gioco.ambiente import AmbienteFactory
+# from gioco.scontro import Scontro
+# from gioco.menu_principale import MenuPrincipale
+>>>>>>> 3c23bbd93f6552aa353f650e41ddc35840b04d4c
 
 gioco = Blueprint('gioco', __name__, template_folder='../templates')
 
@@ -11,7 +19,7 @@ gioco = Blueprint('gioco', __name__, template_folder='../templates')
 def index():
     return render_template('menu.html')
 
-
+"""
 # Nuovo gioco: form per creare la compagnia (1-3 PG)
 @gioco.route('/new-game', methods=['GET', 'POST'])
 def new_game():
@@ -56,35 +64,3 @@ def select_mission():
 
     missioni = MissioneFactory.get_opzioni()
     return render_template('select_mission.html', missioni=missioni)
-
-
-# Seleziona l'inventario della partita
-@gioco.route('/inventory', methods=['GET', 'POST'])
-def show_inventary(nome_personaggio):
-    if 'compagnia' not in session:
-        return redirect(url_for('gioco.new_game'))
-
-    mp = MenuPrincipale.from_dict(session['compagnia'])
-    personaggi_inventari = mp.personaggi_inventari
-
-    # Assegnazione di valori di controllo
-    personaggio = None
-    inventario = None
-
-    for pg, inv in personaggi_inventari:
-        if pg.nome == nome_personaggio:
-            personaggio = pg
-            inventario = inv
-            break
-
-    if not personaggio:
-        redirect(url_for('gioco.new_game'))
-
-    lista_pg = [pg.to_dict() for pg, _ in personaggi_inventari]
-    lista_oggetti = [oggetto.to_dict() for oggetto in personaggio.inventario]
-
-    return render_template('inventary.html',
-                            personaggio=personaggio.to_dict(),
-                            inventario=inventario,
-                            lista_pg=lista_pg,
-                            lista_oggetti=lista_oggetti)
