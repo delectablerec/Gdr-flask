@@ -14,11 +14,11 @@ class Compagnia:
 
     def personaggi_presenti(self) -> list[str]:
         nomi = [personaggio.nome for personaggio in self.personaggi]
-        testo = ("\nPersonaggi nella compagnia:")
-        Log.scrivi_log(testo)
+        msg = ("\nPersonaggi nella compagnia:")
+        Log.scrivi_log(msg)
         for personaggio, _ in self.personaggi_inventari:
-            testo = f"Nome: {personaggio.nome}, Classe: {personaggio.__class__.__name__}"
-            Log.scrivi_log(testo)
+            msg = f"Nome: {personaggio.nome}, Classe: {personaggio.__class__.__name__}"
+            Log.scrivi_log(msg)
         return nomi
 
     def aggiungi_personaggio(self, personaggio_inventario: tuple[Personaggio, Inventario]) -> None:
@@ -28,21 +28,21 @@ class Compagnia:
         if personaggio in self.personaggi:
             self.personaggi_inventari = [pers for pers in self.personaggi_inventari if pers[0] != personaggio]
             self.personaggi.remove(personaggio)
-            testo = f"{personaggio.nome} è stato rimosso dalla compagnia con il suo inventario."
-            Log.scrivi_log(testo)
+            msg = f"{personaggio.nome} è stato rimosso dalla compagnia con il suo inventario."
+            Log.scrivi_log(msg)
         else:
-            testo = f"{personaggio.nome} non è presente nella compagnia."
-            Log.scrivi_log(testo)
+            msg = f"{personaggio.nome} non è presente nella compagnia."
+            Log.scrivi_log(msg)
 
     def mostra_inventari(self) -> None:
-        testo = ("\n=== Inventari della compagnia ===")
-        Log.scrivi_log(testo)
+        msg = ("\n=== Inventari della compagnia ===")
+        Log.scrivi_log(msg)
         for personaggio, inventario in self.personaggi_inventari:
-            testo = f"\n{personaggio.nome} - Inventario:"
-            Log.scrivi_log(testo)
+            msg = f"\n{personaggio.nome} - Inventario:"
+            Log.scrivi_log(msg)
             for oggetto in inventario.oggetti:
-                testo = f" - {oggetto.nome}"
-                Log.scrivi_log(testo)
+                msg = f" - {oggetto.nome}"
+                Log.scrivi_log(msg)
 
     def get_inventari(self) -> list[Inventario]:
         return [inventario for personaggio, inventario in self.personaggi_inventari]

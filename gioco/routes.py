@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
-
-# from gioco.missione import MissioneFactory
-# from gioco.ambiente import AmbienteFactory
-# from gioco.scontro import Scontro
-# from gioco.menu_principale import MenuPrincipale
+#from gioco.menu_principale import MenuPrincipale
+#from gioco.missione import MissioneFactory
+#from gioco.ambiente import AmbienteFactory
+#from gioco.scontro import Scontro
 
 gioco = Blueprint('gioco', __name__, template_folder='../templates')
 
@@ -57,3 +56,18 @@ def select_mission():
     missioni = MissioneFactory.get_opzioni()
     return render_template('select_mission.html', missioni=missioni)
 """
+
+# Mostra i log dello scontro, permette di attaccare e usare l'inventario
+@gioco.route('/battle', methods=['GET', 'POST'])
+def battle():
+    #E' il personaggio che sta attualmente giocando il suo turno
+    #DA RECUPERARE
+    personaggio_attivo =""
+    nome_personaggio_attivo = "Genoveffo"
+
+    #Questa variabile boleana disabilita i pulsanti attacca e usa inventario ,
+    # è da switchare quando è il turno del personaggio
+    #DA RECUPERARE
+    buttons_diasable = True
+
+    return render_template('battle.html', nome_personaggio_attivo = nome_personaggio_attivo)

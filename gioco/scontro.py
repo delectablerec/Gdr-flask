@@ -38,14 +38,14 @@ class Scontro:
         return nemici_preparati
 
     def esegui_scontro(self) -> bool:
-        testo = ("\n=== Inizio dello scontro ===")
-        Log.scrivi_log(testo)
-        testo = f"Ambiente: { self.ambiente.nome }"
-        Log.scrivi_log(testo)
+        msg = ("\n=== Inizio dello scontro ===")
+        Log.scrivi_log(msg)
+        msg = f"Ambiente: { self.ambiente.nome }"
+        Log.scrivi_log(msg)
 
         for nemico in self.nemici:
-            testo = f"Nemico: {nemico[0].nome}"
-            Log.scrivi_log(testo)
+            msg = f"Nemico: {nemico[0].nome}"
+            Log.scrivi_log(msg)
 
 
         turno_corrente = Turno(
@@ -56,20 +56,20 @@ class Scontro:
 
         while True:
             self.counter_turni += 1
-            testo = f"\n=== Turno {self.counter_turni} ==="
-            Log.scrivi_log(testo)
+            msg = f"\n=== Turno {self.counter_turni} ==="
+            Log.scrivi_log(msg)
 
             ordine = [
                 personaggio for personaggio in turno_corrente.personaggi
                 if not personaggio.sconfitto()
             ]
-            testo = ("Ordine di combattimento:")
-            Log.scrivi_log(testo)
+            msg = ("Ordine di combattimento:")
+            Log.scrivi_log(msg)
             for personaggio in ordine:
-                testo = f"- {personaggio.nome}"
-                Log.scrivi_log(testo)
-                testo = f"Ordine combattimento turno {self.counter_turni}: {personaggio.nome}."
-                Log.scrivi_log(testo)
+                msg = f"- {personaggio.nome}"
+                Log.scrivi_log(msg)
+                msg = f"Ordine combattimento turno {self.counter_turni}: {personaggio.nome}."
+                Log.scrivi_log(msg)
 
             var = turno_corrente.gestisci_turno()
 
@@ -87,22 +87,22 @@ class Scontro:
                 self.stampa_risultati_finali()
 
     def concludi_vittoria(self):
-        testo = ("\nTutti i nemici sono stati sconfitti!")
-        Log.scrivi_log(testo)
+        msg = ("\nTutti i nemici sono stati sconfitti!")
+        Log.scrivi_log(msg)
 
     def concludi_sconfitta(self):
-        testo = ("\nTutti i personaggi sono stati sconfitti.")
-        Log.scrivi_log(testo)
+        msg = ("\nTutti i personaggi sono stati sconfitti.")
+        Log.scrivi_log(msg)
 
     def stampa_risultati_finali(self):
-        testo = ("\n=== Risultati finali ===")
-        Log.scrivi_log(testo)
-        testo = ("Stato finale dei personaggi: ")
-        Log.scrivi_log(testo)
+        msg = ("\n=== Risultati finali ===")
+        Log.scrivi_log(msg)
+        msg = ("Stato finale dei personaggi: ")
+        Log.scrivi_log(msg)
         for g, _ in self.giocatori:
             stato = "Sconfitto" if g.sconfitto() else "Vivo"
-            testo = f"{g.nome}: {stato}"
-            Log.scrivi_log(testo)
+            msg = f"{g.nome}: {stato}"
+            Log.scrivi_log(msg)
 
     def to_dict(self) -> dict:
         return {

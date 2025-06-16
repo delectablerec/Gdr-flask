@@ -25,8 +25,8 @@ class Missione(SerializableMixin):
 
     def rimuovi_nemico(self, nemico : Personaggio)->None:
         self.nemici.remove(nemico)
-        testo = f"{nemico} rimosso dalla lista nemici della missione"
-        Log.scrivi_log(testo)
+        msg = f"{nemico} rimosso dalla lista nemici della missione"
+        Log.scrivi_log(msg)
         Json.scrivi_dati("data/salvataggio.json",Json.applica_patch(self.to_dict()))
 
     def rimuovi_nemici_sconfitti(self)->None:
@@ -43,8 +43,8 @@ class Missione(SerializableMixin):
     def verifica_completamento(self)-> bool :
         if len(self.nemici) == 0:
             self.completata = True
-            testo = f"Missione '{self.nome}' completata"
-            Log.scrivi_log(testo)
+            msg = f"Missione '{self.nome}' completata"
+            Log.scrivi_log(msg)
             return True
         return False
 
@@ -55,8 +55,8 @@ class Missione(SerializableMixin):
             if inventario.proprietario == None :
                 raise ValueError("Non è possibile assegnare un premio ad un inventario senza un personaggio")
             inventario.aggiungi(premio)
-            testo = f"Premio {premio.nome} aggiunto all'inventario di {inventario.proprietario.nome} "
-            Log.scrivi_log(testo)
+            msg = f"Premio {premio.nome} aggiunto all'inventario di {inventario.proprietario.nome} "
+            Log.scrivi_log(msg)
             dati_da_salvare = [self.to_dict(), inventario.to_dict()]
             for dati in dati_da_salvare:
                 Json.scrivi_dati("data/salvataggio.json",Json.applica_patch(dati))
@@ -114,11 +114,11 @@ class GestoreMissioni(SerializableMixin):
         return [imboscata, salva_principessa, culto]
 
     def mostra(self)->None:
-        testo = ("Missioni disponibili:")
-        Log.scrivi_log(testo)
+        msg = ("Missioni disponibili:")
+        Log.scrivi_log(msg)
         for missione in self.lista_missioni:
-            testo = f"-{missione.nome}"
-            Log.scrivi_log(testo)
+            msg = f"-{missione.nome}"
+            Log.scrivi_log(msg)
 
     def finita(self)->bool:
         esito = True
@@ -126,9 +126,9 @@ class GestoreMissioni(SerializableMixin):
             if missione.completata == False :
                 esito = False
             if esito == True:
-                testo = f"Missione : {missione.nome} completata"
+                msg = f"Missione : {missione.nome} completata"
                 missione.attiva = False
-                Log.scrivi_log(testo)
+                Log.scrivi_log(msg)
         Json.scrivi_dati("data/salvataggio.json",Json.applica_patch(self.to_dict()))
         return esito
 
@@ -145,8 +145,8 @@ class GestoreMissioni(SerializableMixin):
             #Se non ci sono missioni che non siano state completate
             raise ValueError("Non ci sono missioni non completate ")
         except ValueError as e :
-            testo = f"Errore: {e}"
-            Log.scrivi_log(testo)
+            msg = f"Errore: {e}"
+            Log.scrivi_log(msg)
             return None
 
     def to_dict(self) -> dict:

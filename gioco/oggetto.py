@@ -54,12 +54,12 @@ class PozioneCura(Oggetto):
 
         if bersaglio is None:
             target = utilizzatore
-            testo = "su se stesso"
+            msg = "su se stesso"
         else:
             target = bersaglio
-            testo = f"su {bersaglio.nome}"
+            msg = f"su {bersaglio.nome}"
         target.salute = min(target.salute + self.valore + mod_ambiente, target.salute_max)
-        text = f"{utilizzatore.nome} usa {self.nome} {testo} e ripristinando {self.valore + mod_ambiente} salute!"
+        text = f"{utilizzatore.nome} usa {self.nome} {msg} e ripristinando {self.valore + mod_ambiente} salute!"
         Log.scrivi_log(text)
         self.usato = True
     def to_dict(self) -> dict:
@@ -86,14 +86,14 @@ class BombaAcida(Oggetto):
 
     def usa(self, utilizzatore: Personaggio, bersaglio: Personaggio = None, mod_ambiente: int = 0) -> None:
         if bersaglio is None:
-            testo= f"{utilizzatore.nome} cerca di usare {self.nome}, ma non ha un bersaglio!"
-            Log.scrivi_log(testo)
+            msg= f"{utilizzatore.nome} cerca di usare {self.nome}, ma non ha un bersaglio!"
+            Log.scrivi_log(msg)
             return
         bersaglio.subisci_danno(self.danno + mod_ambiente)
-        testo = f"{utilizzatore.nome} lancia {self.nome} su {bersaglio.nome}, infliggendo {self.danno + mod_ambiente} danni!"
-        Log.scrivi_log(testo)
-        testo = f"A {bersaglio.nome} resta {bersaglio.salute} salute"
-        Log.scrivi_log(testo)
+        msg = f"{utilizzatore.nome} lancia {self.nome} su {bersaglio.nome}, infliggendo {self.danno + mod_ambiente} danni!"
+        Log.scrivi_log(msg)
+        msg = f"A {bersaglio.nome} resta {bersaglio.salute} salute"
+        Log.scrivi_log(msg)
         self.usato = True
     def to_dict(self) -> dict:
         data = super().to_dict()
@@ -119,8 +119,8 @@ class Medaglione(Oggetto):
     def usa(self, utilizzatore: 'Personaggio', bersaglio: 'Personaggio' = None, mod_ambiente: int = 0) -> None:
         target = bersaglio if bersaglio else utilizzatore
         target.attacco_max += 10 + mod_ambiente
-        testo = f"{target.nome} indossa {self.nome}, aumentando il suo attacco massimo!"
-        Log.scrivi_log(testo)
+        msg = f"{target.nome} indossa {self.nome}, aumentando il suo attacco massimo!"
+        Log.scrivi_log(msg)
         self.usato = True
     def to_dict(self) -> dict:
         return super().to_dict()

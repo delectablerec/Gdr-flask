@@ -51,8 +51,8 @@ class Foresta(Ambiente):
 
     def modifica_attacco_max(self, attaccante: Personaggio) -> int:
         if isinstance(attaccante, Guerriero):
-            testo = f"{attaccante.nome} guadagna {self.modifica_attacco} attacco nella Foresta!"
-            Log.scrivi_log(testo)
+            msg = f"{attaccante.nome} guadagna {self.modifica_attacco} attacco nella Foresta!"
+            Log.scrivi_log(msg)
             return self.modifica_attacco
         return 0
 
@@ -71,20 +71,20 @@ class Vulcano(Ambiente):
 
     def modifica_attacco_max(self, attaccante: Personaggio) -> int:
         if isinstance(attaccante, Mago):
-            testo = f"{attaccante.nome} guadagna {self.modifica_attacco} attacco nel Vulcano!"
-            Log.scrivi_log(testo)
+            msg = f"{attaccante.nome} guadagna {self.modifica_attacco} attacco nel Vulcano!"
+            Log.scrivi_log(msg)
             return self.modifica_attacco
         elif isinstance(attaccante, Ladro):
-            testo = f"{attaccante.nome} perde {self.modifica_attacco} attacco nel Vulcano!"
-            Log.scrivi_log(testo)
+            msg = f"{attaccante.nome} perde {self.modifica_attacco} attacco nel Vulcano!"
+            Log.scrivi_log(msg)
             return -self.modifica_attacco
         return 0
 
     def modifica_effetto_oggetto(self, oggetto: Oggetto) -> int:
         if isinstance(oggetto, BombaAcida):
             variazione = random.randint(0, 15)
-            testo = f"Nella {self.nome}, la Bomba Acida guadagna {variazione} danni!"
-            Log.scrivi_log(testo)
+            msg = f"Nella {self.nome}, la Bomba Acida guadagna {variazione} danni!"
+            Log.scrivi_log(msg)
             return variazione
         return 0
 
@@ -98,16 +98,16 @@ class Palude(Ambiente):
 
     def modifica_attacco_max(self, attaccante: Personaggio) -> int:
         if isinstance(attaccante, (Guerriero, Ladro)):
-            testo = f"{attaccante.nome} perde {-self.modifica_attacco} attacco nella Palude!"
-            Log.scrivi_log(testo)
+            msg = f"{attaccante.nome} perde {-self.modifica_attacco} attacco nella Palude!"
+            Log.scrivi_log(msg)
             return self.modifica_attacco
         return 0
 
     def modifica_effetto_oggetto(self, oggetto: Oggetto) -> int:
         if isinstance(oggetto, PozioneCura):
             riduzione = int(oggetto.valore * self.modifica_cura)
-            testo = f"Nella {self.nome}, la Pozione Cura ha effetto ridotto di {riduzione} punti!"
-            Log.scrivi_log(testo)
+            msg = f"Nella {self.nome}, la Pozione Cura ha effetto ridotto di {riduzione} punti!"
+            Log.scrivi_log(msg)
             return -riduzione
         return 0
 
@@ -135,6 +135,6 @@ class AmbienteFactory:
     def sorteggia_ambiente() -> Ambiente:
         ambienti = list(AmbienteFactory.get_opzioni().values())
         ambiente = random.choice(ambienti)
-        testo = f"Ambiente Casuale Selezionato: {ambiente.nome}"
-        Log.scrivi_log(testo)
+        msg = f"Ambiente Casuale Selezionato: {ambiente.nome}"
+        Log.scrivi_log(msg)
         return ambiente
