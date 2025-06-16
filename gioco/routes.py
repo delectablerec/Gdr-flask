@@ -71,3 +71,40 @@ def battle():
     buttons_diasable = True
 
     return render_template('battle.html', nome_personaggio_attivo = nome_personaggio_attivo)
+
+
+# Seleziona l'inventario della partita
+@gioco.route('/inventory/<nome_personaggio>', methods=['GET', 'POST'])
+def show_inventory(nome_personaggio):
+    if 'compagnia' not in session:
+        return redirect(url_for('gioco.new_game'))
+
+    mp = MenuPrincipale.from_dict(session['compagnia'])
+    personaggi_inventari = mp.personaggi_inventari
+
+    # Cerca il personaggio selezionato
+    personaggio = None
+    inventario = None
+
+    for pg, inv in personaggi_inventari:
+        if pg.nome == nome_personaggio:
+            personaggio = pg
+            inventario = inv
+            break
+
+    if not personaggio:
+        return redirect(url_for('gioco.new_game'))
+
+    # Lista di tutti i personaggi
+    lista_pg = [pg.to_dict() for pg, _ in personaggi_inventari]
+
+    # Lista oggetti del personaggio selezionato
+    lista_oggetti = [oggetto.to_dict() for oggetto in inventario] if inventario else []
+
+    return render_template(
+        'inventory.html',
+        personaggio=personaggio.to_dict(),
+        inventario=inventario,
+        lista_pg=lista_pg,
+        lista_oggetti=lista_oggetti
+    )
