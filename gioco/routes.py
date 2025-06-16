@@ -1,16 +1,9 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
-<<<<<<< HEAD
-#from gioco.menu_principale import MenuPrincipale
-#from gioco.missione import MissioneFactory
-#from gioco.ambiente import AmbienteFactory
-#from gioco.scontro import Scontro
-=======
 
 # from gioco.missione import MissioneFactory
 # from gioco.ambiente import AmbienteFactory
 # from gioco.scontro import Scontro
 # from gioco.menu_principale import MenuPrincipale
->>>>>>> 3c23bbd93f6552aa353f650e41ddc35840b04d4c
 
 gioco = Blueprint('gioco', __name__, template_folder='../templates')
 
@@ -19,8 +12,7 @@ gioco = Blueprint('gioco', __name__, template_folder='../templates')
 def index():
     return render_template('menu.html')
 
-"""
-# Nuovo gioco: form per creare la compagnia (1-3 PG)
+"""# Nuovo gioco: form per creare la compagnia (1-3 PG)
 @gioco.route('/new-game', methods=['GET', 'POST'])
 def new_game():
     if request.method == 'POST':
@@ -64,3 +56,4 @@ def select_mission():
 
     missioni = MissioneFactory.get_opzioni()
     return render_template('select_mission.html', missioni=missioni)
+"""
