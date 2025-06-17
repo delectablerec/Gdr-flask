@@ -1,6 +1,7 @@
 import random
 from utils.log import Log
 from utils.salvataggio import SerializableMixin
+from utils.messaggi import Messaggi
 from gioco.personaggio import Personaggio
 
 @SerializableMixin.register_class
@@ -12,6 +13,7 @@ class Mago(Personaggio):
     def attacca(self, bersaglio: Personaggio, mod_ambiente: int = 0) -> None:
         danno = random.randint(self.attacco_min - 5, self.attacco_max + 10) + mod_ambiente
         msg = f"{self.nome} lancia un incantesimo su {bersaglio.nome} per {danno} danni!"
+        Messaggi.add_to_messaggi(msg)
         Log.scrivi_log(msg)
         bersaglio.subisci_danno(danno)
 
@@ -21,6 +23,7 @@ class Mago(Personaggio):
         effettivo = nuova_salute - self.salute
         self.salute = nuova_salute
         msg = f"{self.nome} medita e recupera {effettivo} HP. Salute attuale: {self.salute}"
+        Messaggi.add_to_messaggi(msg)
         Log.scrivi_log(msg)
 
 
@@ -33,6 +36,7 @@ class Guerriero(Personaggio):
     def attacca(self, bersaglio: Personaggio, mod_ambiente: int = 0) -> None:
         danno = random.randint(self.attacco_min + 15, self.attacco_max + mod_ambiente + 20)
         msg = f"{self.nome} colpisce con la spada {bersaglio.nome} per {danno} danni!"
+        Messaggi.add_to_messaggi(msg)
         Log.scrivi_log(msg)
         bersaglio.subisci_danno(danno)
 
@@ -42,6 +46,7 @@ class Guerriero(Personaggio):
         effettivo = nuova_salute - self.salute
         self.salute = nuova_salute
         msg = f"{self.nome} si fascia le ferite e recupera {effettivo} HP. Salute attuale: {self.salute}"
+        Messaggi.add_to_messaggi(msg)
         Log.scrivi_log(msg)
 
 
@@ -54,6 +59,7 @@ class Ladro(Personaggio):
     def attacca(self, bersaglio: Personaggio, mod_ambiente: int = 0) -> None:
         danno = random.randint(self.attacco_min + 5, self.attacco_max + 5) + mod_ambiente
         msg = f"{self.nome} colpisce furtivamente {bersaglio.nome} per {danno} danni!"
+        Messaggi.add_to_messaggi(msg)
         Log.scrivi_log(msg)
         bersaglio.subisci_danno(danno)
 
@@ -63,4 +69,5 @@ class Ladro(Personaggio):
         effettivo = nuova_salute - self.salute
         self.salute = nuova_salute
         msg = f"{self.nome} si cura rapidamente e recupera {effettivo} HP. Salute attuale: {self.salute}"
+        Messaggi.add_to_messaggi(msg)
         Log.scrivi_log(msg)

@@ -1,6 +1,8 @@
 from gioco.personaggio import Personaggio
 from utils.log import Log
 from utils.salvataggio import SerializableMixin
+from utils.messaggi import Messaggi
+
 # Modulo oggetti
 # Contiene la classe base Oggetto e le classi derivate
 @SerializableMixin.register_class
@@ -60,6 +62,7 @@ class PozioneCura(Oggetto):
             msg = f"su {bersaglio.nome}"
         target.salute = min(target.salute + self.valore + mod_ambiente, target.salute_max)
         text = f"{utilizzatore.nome} usa {self.nome} {msg} e ripristinando {self.valore + mod_ambiente} salute!"
+        Messaggi.add_to_messaggi(text)
         Log.scrivi_log(text)
         self.usato = True
     def to_dict(self) -> dict:
@@ -87,12 +90,15 @@ class BombaAcida(Oggetto):
     def usa(self, utilizzatore: Personaggio, bersaglio: Personaggio = None, mod_ambiente: int = 0) -> None:
         if bersaglio is None:
             msg= f"{utilizzatore.nome} cerca di usare {self.nome}, ma non ha un bersaglio!"
+            Messaggi.add_to_messaggi(msg)
             Log.scrivi_log(msg)
             return
         bersaglio.subisci_danno(self.danno + mod_ambiente)
         msg = f"{utilizzatore.nome} lancia {self.nome} su {bersaglio.nome}, infliggendo {self.danno + mod_ambiente} danni!"
+        Messaggi.add_to_messaggi(msg)
         Log.scrivi_log(msg)
         msg = f"A {bersaglio.nome} resta {bersaglio.salute} salute"
+        Messaggi.add_to_messaggi(msg)
         Log.scrivi_log(msg)
         self.usato = True
     def to_dict(self) -> dict:
@@ -120,8 +126,10 @@ class Medaglione(Oggetto):
         target = bersaglio if bersaglio else utilizzatore
         target.attacco_max += 10 + mod_ambiente
         msg = f"{target.nome} indossa {self.nome}, aumentando il suo attacco massimo!"
+        Messaggi.add_to_messaggi(msg)
         Log.scrivi_log(msg)
         self.usato = True
+        
     def to_dict(self) -> dict:
         return super().to_dict()
 
