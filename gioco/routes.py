@@ -75,7 +75,7 @@ def battle():
 
 # Seleziona l'inventario della partita
 @gioco.route('/inventory/<nome_personaggio>', methods=['GET', 'POST'])
-def show_inventory(nome_personaggio):
+def inventory(nome_personaggio):
     if 'compagnia' not in session:
         return redirect(url_for('gioco.new_game'))
 
