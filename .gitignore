@@ -1,5 +1,40 @@
-# pipenv
-/.venv
+# === Python ===
 __pycache__/
-*.pyc
-/venv
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+pip-selfcheck.json
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# === Database / Logs ===
+*.sqlite
+*.log
+logs/
+
+# === OS Generated ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# === Project-Specific (aggiungi qui le tue cartelle) ===
+/data/
+/environment/
+# /gioco/   # Scommenta se vuoi ignorare intere cartelle (ma attento!)
