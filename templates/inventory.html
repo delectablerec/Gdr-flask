@@ -1,78 +1,33 @@
-
 {% extends "layout.html" %}
-{% block title %}Inventario di {{ pg_nome }}{% endblock %}
+    <meta charset="UTF-8">
+ {% block title %}Inventario Personaggi {% endblock %}
 {% block content %}
-<div id="inventory-modal" class="container mt-3">
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Inventario di {{ pg_nome }}</h5>
-            <form method="post" style="margin:0;">
-                <button type="submit" name="action" value="close" class="btn btn-outline-secondary btn-sm">
-                    Torna alla pagina principale
-                </button>
-            </form>
-        </div>
-        <div class="card-body">
-            <form method="post">
-                <!-- Lista oggetti (sempre visibile) -->
-                <div class="mb-3">
-                    <label for="oggetto" class="form-label">Seleziona un oggetto:</label>
-                    <select id="oggetto" name="oggetto" class="form-select" required onchange="this.form.submit()">
-                        <option value="">-- Scegli oggetto --</option>
-                        {% for obj in oggetti %}
-                            <option value="{{ obj.nome }}" {% if obj.nome == oggetto_selezionato %}selected{% endif %}>
-                                {{ obj.nome }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <!-- Lista bersagli (visibile solo dopo selezione oggetto) -->
-                {% if oggetto_selezionato and bersagli %}
-                <div class="mb-3">
-                    <label for="bersaglio" class="form-label">Seleziona bersaglio:</label>
-                    <select id="bersaglio" name="bersaglio" class="form-select" required>
-                        <option value="">-- Scegli bersaglio --</option>
-                        {% for b in bersagli %}
-                            <option value="{{ b.id }}">
-                                {{ b.nome }} ({{ b.salute }}/{{ b.salute_max }}) - {{ b.classe }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
+    <h1>Seleziona un personaggio</h1>
 
-                <!-- Pulsante -->
-                <div class="d-flex gap-2">
-                    {% if oggetto_selezionato and bersagli %}
-                    <button type="submit" class="btn btn-primary" id="use-button" disabled>
-                        Usa Oggetto
-                    </button>
-                    {% endif %}
-                </div>
-                {% endif %}
+    <form method="post">
+        <select name="personaggio_id">
+            <option value="">-- Scegli un personaggio --</option>
+            {% for p in personaggi %}
+                <option value="{{ p.id }}" {% if id_selezionato == p.id %}selected{% endif %}>
+                    {{ p.nome }} ({{ p.classe }})
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit">Mostra Inventario</button>
+    </form>
 
-                <!-- Messaggio di risposta -->
-                {% if messaggio %}
-                <div class="alert alert-info mt-3">
-                    {{ messaggio }}
-                </div>
-                {% endif %}
-            </form>
-        </div>
-    </div>
-</div>
-{% if oggetto_selezionato and bersagli %}
-<script>
-// Abilita il pulsante "Usa Oggetto" solo quando entrambe le select hanno un valore
-    document.addEventListener('DOMContentLoaded', function() {
-        const bersaglioSelect = document.getElementById('bersaglio');
-        const useButton = document.getElementById('use-button');
-        if (bersaglioSelect && useButton) {
-            bersaglioSelect.addEventListener('change', function() {
-                useButton.disabled = this.value === '';
-            });
-        }
-    });
-</script>
-{% endif %}
+    {% if inventario %}
+        <h2>Inventario di {{ nome_per_id.get(inventario.proprietario, "Sconosciuto") }}</h2>
+        <ul>
+            {% for oggetto in inventario.oggetti %}
+                <li>
+                    <strong>{{ oggetto.nome }}</strong> ({{ oggetto.classe }})
+                    {% if oggetto.offensivo %} - Offensivo{% endif %}
+                    {% if oggetto.usato %} - Usato{% else %} - Non usato{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% elif id_selezionato %}
+        <p><em>Nessun inventario trovato per questo personaggio.</em></p>
+    {% endif %}
 {% endblock %}
-

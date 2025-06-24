@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Lista personaggi{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="text-center mb-4">Lista personaggi</h1>
+
+  <ul class="list-unstyled">
+    {% for pg in personaggi %}
+      <li class="mb-3">
+        <div class="d-flex justify-content-between align-items-center border rounded p-3">
+          <span><strong>{{ pg.nome }}</strong> ({{ pg.classe }})</span>
+
+          <div class="d-flex gap-2">
+            <!-- Pulsante per i dettagli -->
+            <form method="get" action="{{ url_for('characters.dettaglio_personaggio', id=loop.index0) }}">
+              <button type="submit" class="btn btn-outline-primary btn-sm">Dettagli</button>
+            </form>
+
+            <!-- Pulsante per eliminare -->
+            <form method="post" action="{{ url_for('characters.elimina_personaggio', id=loop.index0) }}">
+              <button type="submit" class="btn btn-outline-danger btn-sm"
+                      onclick="return confirm('Eliminare {{ pg.nome }}?')">Elimina</button>
+            </form>
+          </div>
+        </div>
+      </li>
+    {% else %}
+      <li class="text-center">Nessun personaggio.</li>
+    {% endfor %}
+  </ul>
+
+  <div class="text-center mt-4">
+    <a href="{{ url_for('gioco.index') }}" class="btn btn-secondary">Torna al menu principale</a>
+  </div>
+</div>
+{% endblock %}

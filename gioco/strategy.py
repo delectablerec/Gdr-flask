@@ -3,11 +3,11 @@ from ambiente import Ambiente
 from inventario import Inventario
 from personaggio import Personaggio
 from utils.log import Log
-from utils.salvataggio import SerializableMixin
+ 
 
 
-@SerializableMixin.register_class
-class StrategiaAttacco(SerializableMixin):
+ 
+class StrategiaAttacco ():
     '''
     La classe StrategiaAttacco è una classe base per le strategie di attacco
     dei nemici.
@@ -52,7 +52,7 @@ durante il suo turno
 '''
 
 
-@SerializableMixin.register_class
+ 
 class Aggressiva(StrategiaAttacco):
     '''
     la classe Aggressiva rappresenta una strategia in cui nemico decide di
@@ -103,7 +103,7 @@ class Aggressiva(StrategiaAttacco):
         nemico.attacca(bersaglio, mod_ambiente=mod_attacco)
 
 
-@SerializableMixin.register_class
+ 
 class Difensiva(StrategiaAttacco):
     '''
     La classe Difensiva rappresenta una strategia in cui il nemico si concentra
@@ -160,7 +160,7 @@ class Difensiva(StrategiaAttacco):
         nemico.attacca(bersaglio, mod_attacco)
 
 
-@SerializableMixin.register_class
+ 
 class Equilibrata(StrategiaAttacco):
     '''
     La classe Equilibrata rappresenta una strategia in cui il nemico decide di

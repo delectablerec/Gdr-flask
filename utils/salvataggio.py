@@ -1,86 +1,5 @@
 import json
 from typing import Any
-class SerializableMixin:
-    """
-    Mixin che fornisce funzionalità per serializzare e deserializzare oggetti.
-    """
-
-    _class_registry = {}  # Dizionario per la registrazione delle classi
-
-    # Firma: def to_dict(self) -> dict
-    def to_dict(self) -> dict:
-        """Converte l'oggetto in un dizionario serializzabile."""
-        result = {"__class__": self.__class__.__name__}
-        for key, value in self.__dict__.items():
-            result[key] = self._serialize(value)
-        return result
-
-    # Firma: def _serialize(value: Any) -> Any
-    @staticmethod
-    def _serialize(value: Any) -> Any:
-        """Serializza un valore in una forma compatibile con JSON."""
-        if isinstance(value, SerializableMixin):
-            return value.to_dict()
-        elif isinstance(value, list):
-            return [SerializableMixin._serialize(v) for v in value]
-        elif isinstance(value, dict):
-            return {k: SerializableMixin._serialize(v) for k, v in value.items()}
-        elif isinstance(value, float):
-            return int(value) if value.is_integer() else int(value)
-        elif isinstance(value, (int, str, bool, type(None))):
-            return value
-        else:
-            return str(value)
-
-    @classmethod
-    def from_dict(cls, data: dict) -> Any:
-        """Ricostruisce un oggetto a partire dalla sua rappresentazione serializzata."""
-        if isinstance(data, list):
-            return [cls.from_dict(item) for item in data]  # ricorsivamente deserializza ogni elemento
-
-        if "__class__" in data:
-            class_name = data["__class__"]
-            if class_name in cls._class_registry:
-                subclass = cls._class_registry[class_name]
-                obj = subclass.__new__(subclass)
-                for key, value in data.items():
-                    if key != "__class__":
-                        setattr(obj, key, cls._deserialize(value))
-                return obj
-            else:
-                raise ValueError(f"Classe non registrata: {class_name}")
-        else:
-            obj = cls.__new__(cls)
-            for key, value in data.items():
-                setattr(obj, key, cls._deserialize(value))
-            return obj
-
-    @staticmethod
-    def _deserialize(value: Any) -> Any:
-        """Deserializza un valore JSON-like in un oggetto Python (anche ricorsivamente)."""
-        if isinstance(value, dict):
-            return SerializableMixin.from_dict(value)
-        elif isinstance(value, list):
-            return [SerializableMixin._deserialize(v) for v in value]
-        return value
-
-    @classmethod
-    def register_class(cls, subclass: type) -> type:
-        """
-        Registra una sottoclasse per permettere la deserializzazione.
-
-        Args:
-            subclass (type): La classe da registrare.
-
-        Returns:
-            type: La classe registrata.
-
-        Usage:
-            @SerializableMixin.register_class
-            class MiaClasse(SerializableMixin): ...
-        """
-        cls._class_registry[subclass.__name__] = subclass
-        return subclass
 
 class Json:
 
@@ -97,7 +16,6 @@ class Json:
         Return:
             None
         """
-        salvataggio = Json.carica_dati(file_path)
         
         try:
             with open(file_path, 'w') as file:

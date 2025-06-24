@@ -1,15 +1,15 @@
 import random
 #from utils.log import Log
-#from utils.salvataggio import SerializableMixin
+# 
 from gioco.personaggio import Personaggio
 from gioco.classi import Mago, Guerriero, Ladro
 from gioco.ambiente import Ambiente, Vulcano, Foresta, Palude
 from gioco.oggetto import Oggetto, PozioneCura, BombaAcida, Medaglione
 from gioco.inventario import Inventario
-#from utils.salvataggio import SerializableMixin, Json
+# , Json
 from utils.messaggi import Messaggi
 
-# @SerializableMixin.register_class
+#  
 class Missione():
     """
     Si occupa di aggregare istanze di ambiente , nemici e ricompense
@@ -191,9 +191,9 @@ class Missione():
 
 
 #Lista delle missioni
-#@SerializableMixin.register_class
+# 
 class GestoreMissioni():
-#class GestoreMissioni(SerializableMixin):
+#class GestoreMissioni ():
     """
     È un gestore di istanze della classe Missione, e le gestisce con diversi metodi
     """

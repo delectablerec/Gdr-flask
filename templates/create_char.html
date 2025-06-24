@@ -2,30 +2,34 @@
 {% block title %}Creazione Personaggio{% endblock %}
 
 {% block content %}
-    <h1>Creazione del personaggio</h1>
-    <form method="POST">
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+  <form method="POST" class="card shadow-sm p-4" style="max-width: 800px; width: 100%;">
+    <h1 class="h4 text-center mb-4">Creazione del personaggio</h1>
 
-        <label for="nome">Nome personaggio:</label>
-        <input type="text" id="nome" name="nome" required>
-        <br>
+    <div class="mb-3">
+      <label for="nome" class="form-label">Nome personaggio</label>
+      <input type="text" id="nome" name="nome" class="form-control" required>
+    </div>
 
-        <label for="classe">Classe:</label>
-        <select id="classe" name="classe" required>
-            {% for c in classi %}
-            <option value="{{ c }}">{{ c }}</option>
-            {% endfor %}
-        </select>
-        <br>
+    <div class="mb-3">
+      <label for="classe" class="form-label">Classe</label>
+      <select id="classe" name="classe" class="form-select" required>
+        {% for c in classi %}
+          <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-        <label for="oggetto">Oggetto iniziale:</label>
-        <select id="oggetto" name="oggetto" required>
-            {% for o in oggetti %}
-            <option value="{{ o }}">{{ o }}</option>
-            {% endfor %}
-        </select>
-        <br>
+    <div class="mb-4">
+      <label for="oggetto" class="form-label">Oggetto iniziale</label>
+      <select id="oggetto" name="oggetto" class="form-select" required>
+        {% for o in oggetti %}
+          <option value="{{ o }}">{{ o }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-        <button type="submit">Conferma</button>
-
-    </form>
+    <button type="submit" class="btn btn-outline-primary btn-lg w-100">Conferma</button>
+  </form>
+</div>
 {% endblock %}

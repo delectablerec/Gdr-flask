@@ -1,6 +1,6 @@
 # importo di datetime per la registrazione degli eventi
 from datetime import datetime
-
+import os
 class Log:
     """Classe per la registrazione degli eventi del gioco."""
     @staticmethod
@@ -14,6 +14,10 @@ class Log:
         Return:
             None
         """
+        # creo cartella data se non esiste
+        
+        if not os.path.exists("data"):
+            os.makedirs("data")
         
         with open("data/log.txt", "a", encoding="utf-8") as file:
             file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {messaggio}\n")

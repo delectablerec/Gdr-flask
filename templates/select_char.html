@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block title %}BeginBattle{% endblock %}
+
+{% block content %}
+    <p>Stai per giocare la missione : {{missione_corrente.nome}}</p>
+    <!--<a href="{{ url_for('mission.select_mission') }}" class="btn btn-warning btn-lg mb-2">Seleziona Missione</a>-->
+    <p>Nell'ambiente {{ambiente_corrente.__class__.__name__}}</p>
+    <form method="post">
+
+      {% for personaggio in personaggi %}
+        <p><input type="checkbox" name= "selected_chars" value="{{ personaggio.id }}" id="selected_pg">
+          {{personaggio.nome}} - classe: {{personaggio.classe}}
+        </input></p>
+      {% endfor %}
+      <div>
+        <button type="submit">Inizia la battaglia!</button>
+      </div>
+    </form>
+{% endblock %}

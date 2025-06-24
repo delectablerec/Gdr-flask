@@ -1,10 +1,10 @@
 import random
 from utils.log import Log
-from utils.salvataggio import SerializableMixin
+ 
 from utils.messaggi import Messaggi
 from gioco.personaggio import Personaggio
 
-@SerializableMixin.register_class
+ 
 class Mago(Personaggio):
     """
     Classe che rappresenta un personaggio mago.
@@ -61,7 +61,7 @@ class Mago(Personaggio):
         Log.scrivi_log(msg)
 
 
-@SerializableMixin.register_class
+ 
 class Guerriero(Personaggio):
     """
     Classe che rappresenta un personaggio guerriero.
@@ -118,7 +118,7 @@ class Guerriero(Personaggio):
         Log.scrivi_log(msg)
 
 
-@SerializableMixin.register_class
+ 
 class Ladro(Personaggio):
     """
     Estende la classe Personaggio, ha salute elevata a 140, +5 attacco_max e

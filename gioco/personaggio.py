@@ -2,16 +2,17 @@ from gioco.basic import Basic
 from utils.log import Log
 # serve per random.randint nei metodi attacca
 import random, uuid
-from utils.salvataggio import SerializableMixin
+ 
 from utils.messaggi import Messaggi
 
-@SerializableMixin.register_class
-class Personaggio(SerializableMixin, Basic):
+ 
+class Personaggio(Basic):
     """
     Classe Padre per tutte classi
     Contiene le proprietà comuni a ogni classe (Mago, Ladro, Guerriero)
     """
     def __init__(self, nome: str) -> None:
+        self.id = str(uuid.uuid4())  
         self.nome = nome
         self.salute = 100
         self.salute_max = 200

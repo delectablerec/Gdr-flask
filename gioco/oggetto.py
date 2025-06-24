@@ -1,12 +1,12 @@
 from gioco.personaggio import Personaggio
 from utils.log import Log
-from utils.salvataggio import SerializableMixin
+ 
 from utils.messaggi import Messaggi
 
 # Modulo oggetti
 # Contiene la classe base Oggetto e le classi derivate
-@SerializableMixin.register_class
-class Oggetto(SerializableMixin):
+ 
+class Oggetto ():
     """
     Classe padre di tutti gli oggetti contenibili nell'inventario
     """
@@ -77,7 +77,7 @@ class Oggetto(SerializableMixin):
         oggetto.messaggi = data.get("messaggi", "")
         return oggetto
 
-@SerializableMixin.register_class
+ 
 class PozioneCura(Oggetto):
     """
     Cura il personaggio che la usa di un certo valore
@@ -151,7 +151,7 @@ class PozioneCura(Oggetto):
         oggetto.usato = data.get("usato", False)
         return oggetto
 
-@SerializableMixin.register_class
+ 
 class BombaAcida(Oggetto):
     """
     Infligge danno pari al valore(Proprietà)
@@ -222,7 +222,7 @@ class BombaAcida(Oggetto):
         oggetto.usato = data.get("usato", False)
         return oggetto
 
-@SerializableMixin.register_class
+ 
 class Medaglione(Oggetto):
     """
     Incrementa l'attacco_max del personaggio che lo usa

@@ -7,7 +7,7 @@ from gioco.missione import Missione
 from gioco.personaggio import Personaggio
 from gioco.strategy import StrategiaAttacco, StrategiaAttaccoFactory
 from gioco.turno import Turno
-from utils.salvataggio import SerializableMixin, Json
+ , Json
 
 
 class Scontro:

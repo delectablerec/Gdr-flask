@@ -3,12 +3,11 @@ from gioco.oggetto import BombaAcida, Oggetto, PozioneCura
 from gioco.classi import Guerriero, Ladro, Mago
 from gioco.personaggio import Personaggio
 from utils.log import Log
-from utils.salvataggio import SerializableMixin
 from utils.messaggi import Messaggi
 
 
-@SerializableMixin.register_class
-class Ambiente(SerializableMixin):
+ 
+class Ambiente():
     """
     E responsabile alla gestione di variabili  globali dovuti all'ambiente
     interagisce con le classi Personaggio e Oggetto
@@ -42,24 +41,23 @@ class Ambiente(SerializableMixin):
 
     @classmethod
     def from_dict(cls, data: dict) -> "Ambiente":
-        """Ricostruisce l’istanza a partire da un dict serializzato.
+        """
+        Ricostruisce un'istanza di Ambiente o di una sua sottoclasse a partire da un dizionario serializzato.
+
+        Utilizza il valore associato alla chiave "classe" per determinare quale sottoclasse
+        di Ambiente istanziare. Se la classe non è riconosciuta, restituisce un'istanza di Foresta come default.
 
         Args:
-            data (dict): Dati serializzati
+            data (dict): Dizionario contenente i dati serializzati dell'ambiente.
+                Deve contenere almeno la chiave "classe" con il nome della sottoclasse.
 
         Returns:
-            Ambiente: Dati deserializzati
+            Ambiente: Un'istanza della sottoclasse di Ambiente indicata nel dizionario.
         """
-        mapping = {
-            "Foresta": Foresta,
-            "Vulcano": Vulcano,
-            "Palude": Palude
-        }
-        ambiente_cls = mapping.get(data.get("classe"), Foresta)
+        classe_nome = data.get("classe", "Foresta")
+        ambiente_cls = globals().get(classe_nome, Foresta)
         return ambiente_cls()
 
-
-@SerializableMixin.register_class
 class Foresta(Ambiente):
     """
     La classe Foresta eredita da Ambiente e rappresenta un ambiente specifico
@@ -113,7 +111,7 @@ class Foresta(Ambiente):
         return 0
 
 
-@SerializableMixin.register_class
+ 
 class Vulcano(Ambiente):
     """
     La classe Vulcano eredita da Ambiente e rappresenta un ambiente specifico
@@ -182,7 +180,7 @@ class Vulcano(Ambiente):
         return self.modifica_cura
 
 
-@SerializableMixin.register_class
+ 
 class Palude(Ambiente):
     """
     La classe Palude eredita da Ambiente e rappresenta un ambiente specifico

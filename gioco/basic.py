@@ -20,7 +20,7 @@ class Basic():
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> 'basic':
+    def from_dict(cls, data: dict) -> 'Basic':
         """
         Deserializza un dizionario in un oggetto basic.
 
