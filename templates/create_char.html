@@ -4,31 +4,36 @@
 {% block content %}
 <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
   <form method="POST" class="card shadow-sm p-4" style="max-width: 800px; width: 100%;">
+
     <h1 class="h4 text-center mb-4">Creazione del personaggio</h1>
 
+    <!-- Nome del personaggio -->
     <div class="mb-3">
-      <label for="nome" class="form-label">Nome personaggio</label>
-      <input type="text" id="nome" name="nome" class="form-control" required>
+      <label for="nome_personaggio" class="form-label">Nome del personaggio</label>
+      <input type="text" id="nome_personaggio" name="nome_personaggio" class="form-control" required>
     </div>
 
+    <!-- Classe -->
     <div class="mb-3">
-      <label for="classe" class="form-label">Classe</label>
-      <select id="classe" name="classe" class="form-select" required>
-        {% for c in classi %}
-          <option value="{{ c }}">{{ c }}</option>
+      <label for="classe_personaggio" class="form-label">Classe del personaggio</label>
+      <select id="classe_personaggio" name="classe_personaggio" class="form-select" required>
+        {% for classe in classi %}
+          <option value="{{ classe }}">{{ classe }}</option>
         {% endfor %}
       </select>
     </div>
 
+    <!-- Oggetto -->
     <div class="mb-4">
-      <label for="oggetto" class="form-label">Oggetto iniziale</label>
-      <select id="oggetto" name="oggetto" class="form-select" required>
-        {% for o in oggetti %}
-          <option value="{{ o }}">{{ o }}</option>
+      <label for="oggetto_iniziale" class="form-label">Oggetto iniziale</label>
+      <select id="oggetto_iniziale" name="oggetto_iniziale" class="form-select" required>
+        {% for oggetto in oggetti %}
+          <option value="{{ oggetto }}">{{ oggetto }}</option>
         {% endfor %}
       </select>
     </div>
 
+    <!-- Pulsante invio -->
     <button type="submit" class="btn btn-outline-primary btn-lg w-100">Conferma</button>
   </form>
 </div>

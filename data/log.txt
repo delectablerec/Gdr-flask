@@ -1,49 +1,7 @@
-<<<<<<< HEAD
-2025-06-20 12:28:12 - Creato personaggio: kebab2, Classe: Mago, id: 0b7f97d7-448f-4b59-9c41-c19bf5e4ee40, Oggetto iniziale: PozioneCura
-2025-06-20 12:28:13 - Richiesta lista personaggi. Numero personaggi: 8
-=======
-2025-06-20 11:59:56 - Ambiente selezionato: Foresta (id: 1)
-2025-06-20 11:59:56 - Ambiente mostrato: Foresta
-2025-06-20 12:00:02 - Ambiente selezionato: Palude (id: 3)
-2025-06-20 12:00:02 - Ambiente mostrato: Palude
-2025-06-20 12:00:48 - Ambiente selezionato: Palude (id: 3)
-2025-06-20 12:00:48 - Ambiente mostrato: Palude
-2025-06-20 12:00:52 - Ambiente selezionato: Vulcano (id: 2)
-2025-06-20 12:00:52 - Ambiente mostrato: Vulcano
-2025-06-20 12:01:14 - Ambiente selezionato: Vulcano (id: 2)
-2025-06-20 12:01:14 - Ambiente mostrato: Vulcano
-2025-06-20 12:01:25 - Ambiente selezionato: Vulcano (id: 2)
-2025-06-20 12:01:25 - Ambiente mostrato: Vulcano
-2025-06-20 12:03:26 - Ambiente selezionato: Vulcano (id: 2)
-2025-06-20 12:03:26 - Ambiente mostrato: Vulcano
-2025-06-20 12:04:46 - Ambiente selezionato: Vulcano (id: 2)
-2025-06-20 12:06:07 - Ambiente selezionato: Foresta (id: 1)
-2025-06-20 12:06:07 - Ambiente mostrato: Foresta (id: None)
-2025-06-20 12:06:14 - Ambiente mostrato: Foresta (id: None)
-2025-06-20 12:06:19 - Ambiente selezionato: Vulcano (id: 2)
-2025-06-20 12:06:19 - Ambiente mostrato: Vulcano (id: None)
-2025-06-20 12:10:03 - Ambiente selezionato: Vulcano (id: 2)
-2025-06-20 12:10:03 - Ambiente mostrato: Vulcano (id: None)
-2025-06-20 12:10:54 - Ambiente selezionato: Vulcano (id: 2)
-2025-06-20 12:10:54 - Ambiente mostrato: Vulcano (id: None)
-2025-06-20 12:13:55 - Ambiente selezionato: Foresta (id: 1)
-2025-06-20 12:13:55 - Ambiente mostrato: Foresta
->>>>>>> 0c99b928fe3274c4b3514ec5ce016f0c5f7786d8
-2025-06-20 12:35:38 - Creato personaggio: ce, Classe: Ladro, id: e7199f93-0ef0-4d70-ac49-9e5eadc8ecd0, Oggetto iniziale: BombaAcida
-2025-06-20 12:35:39 - Richiesta lista personaggi. Numero personaggi: 1
-2025-06-20 12:36:21 - Creato personaggio: daniele, Classe: Mago, id: 66462b53-8765-4351-9bda-b9167831e418, Oggetto iniziale: PozioneCura
-2025-06-20 12:36:44 - Creato personaggio: eecec, Classe: Ladro, id: 3c662d0b-3a0e-4674-9846-fc2b23042fee, Oggetto iniziale: BombaAcida
-2025-06-20 12:59:47 - Inventario di Alberto selezionato.
-2025-06-23 10:09:05 - Creato personaggio: kebab, Classe: Mago, id: 48ed9ede-7f26-4d37-b117-12fbc88bb445, Oggetto iniziale: PozioneCura
-2025-06-23 10:09:07 - Richiesta lista personaggi. Numero personaggi: 1
-2025-06-23 10:18:56 - Ambiente selezionato: Foresta (id: 1)
-2025-06-23 10:18:56 - Ambiente mostrato: Foresta
-2025-06-23 10:23:21 - Creato personaggio: mister, Classe: Mago, id: 046eb64b-0b61-4315-b56c-afc820a57821, Oggetto iniziale: PozioneCura
-2025-06-23 10:29:36 - Creato personaggio: Konrad, Classe: Mago, id: 350f0387-0b0e-4e1c-9ae0-2119359c84e4, Oggetto iniziale: PozioneCura
-2025-06-23 10:40:08 - Creato personaggio: luca, Classe: Guerriero, id: d4622dbf-515d-4f40-9735-1a4f721474fe, Oggetto iniziale: BombaAcida
-2025-06-23 11:26:42 - Creato personaggio: alpha, Classe: Mago, id: 7b622ca3-2228-402f-b49e-53906c01ca5d, Oggetto iniziale: PozioneCura
-2025-06-23 11:26:47 - Creato personaggio: Konrad, Classe: Ladro, id: 2a21fa24-694c-44db-a363-5044e015823d, Oggetto iniziale: PozioneCura
-2025-06-23 11:31:29 - Creato personaggio: luca, Classe: Guerriero, id: 5b803788-0dca-4deb-bf1a-0e235bac1947, Oggetto iniziale: PozioneCura
-2025-06-23 11:31:32 - Richiesta lista personaggi. Numero personaggi: 5
-2025-06-23 11:31:38 - Eliminato personaggio con ID: 5b803788-0dca-4deb-bf1a-0e235bac1947, Nome: luca
-2025-06-23 11:31:38 - Richiesta lista personaggi. Numero personaggi: 4
+2025-06-24 21:58:57 - Creato personaggio: Zoro, Classe: Mago, id: d0e816fd-255c-4f9d-bed5-611f12c02540, Oggetto iniziale: PozioneCura
+2025-06-24 22:09:25 - Creato personaggio: Lucky luck, Classe: Mago, id: 2cff4448-2141-4d28-aa8f-2472b258d267, Oggetto iniziale: PozioneCura
+2025-06-24 22:34:24 - Creato personaggio: Antoine, Classe: Mago, id: 1e8d70cb-da68-49c6-bd5a-a1cf989b5006, Oggetto iniziale: PozioneCura
+2025-06-24 22:34:35 - Creato personaggio: Zoro, Classe: Mago, id: b1a539a2-900d-409b-a8cc-6d5c3a7fdc91, Oggetto iniziale: PozioneCura
+2025-06-24 22:34:37 - Richiesta lista personaggi. Numero personaggi: 7
+2025-06-24 22:49:26 - Creato personaggio: Zoro, Classe: Mago, id: fe5e65a8-ba44-4a3e-a22a-8a15e1c2cb84, Oggetto iniziale: PozioneCura
+2025-06-24 22:54:24 - Creato personaggio: Antoine, Classe: Mago, id: 350760d8-ac06-4e53-afa1-31f5ef7e2a8f, Oggetto iniziale: PozioneCura

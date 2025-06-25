@@ -1,5 +1,4 @@
 from flask import redirect, render_template, session, url_for, request
-from requests import request
 from . import battle_bp
 from gioco.personaggio import Personaggio
 from gioco.inventario import Inventario

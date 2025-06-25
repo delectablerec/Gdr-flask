@@ -5,39 +5,51 @@ from gioco.oggetto import Oggetto
 from gioco.inventario import Inventario
 from utils.log import Log
 
+
 @characters_bp.route('/create_char', methods=['GET', 'POST'])
 def create_char():
 
-    classi = {cls.__name__: cls for cls in Personaggio.__subclasses__()}
-    oggetti = {cls.__name__: cls for cls in Oggetto.__subclasses__()}
+    if request.method == 'GET':
+        # Costruisce i dizionari con le classi disponibili
+        classi_disponibili = {cls.__name__: cls for cls in Personaggio.__subclasses__()}
+        oggetti_disponibili = {cls.__name__: cls for cls in Oggetto.__subclasses__()}
 
     if request.method == 'POST':
-        nome = request.form['nome'].strip()
-        classe_sel = request.form['classe']
-        oggetto_sel = request.form['oggetto']
+        # Riceve i dati dal form
+        nome_personaggio = request.form['nome_personaggio'].strip()
+        classe_personaggio = request.form['classe_personaggio']
+        oggetto_iniziale = request.form['oggetto_iniziale']
 
-        pg = classi[classe_sel](nome)
-        ogg = oggetti[oggetto_sel]()
-        inv = Inventario(proprietario=pg.id)
-        inv.aggiungi_oggetto(ogg)
+        print("📥 Dati ricevuti dal form:")
+        print("  → Nome:", nome_personaggio)
+        print("  → Classe:", classe_personaggio)
+        print("  → Oggetto:", oggetto_iniziale)
 
-        pg_list = session.get('personaggi', [])
-        inv_list = session.get('inventari', [])
+        # Crea il personaggio e l'inventario
+        nuovo_pg = classi_disponibili[classe_personaggio](nome_personaggio)
+        oggetto = oggetti_disponibili[oggetto_iniziale]()
+        inventario_pg = Inventario(proprietario=nuovo_pg.id)
+        inventario_pg.aggiungi_oggetto(oggetto)
 
-        pg_list.append(pg.to_dict())
-        inv_list.append(inv.to_dict())
+        # Salva nella sessione
+        elenco_pg = session.get('personaggi', [])
+        elenco_inventari = session.get('inventari', [])
 
-        session['personaggi'] = pg_list
-        session['inventari'] = inv_list
+        elenco_pg.append(nuovo_pg.to_dict())
+        elenco_inventari.append(inventario_pg.to_dict())
 
-        Log.scrivi_log(f"Creato personaggio: {pg.nome}, Classe: {classe_sel}, id: {pg.id}, Oggetto iniziale: {oggetto_sel}")
+        session['personaggi'] = elenco_pg
+        session['inventari'] = elenco_inventari
+
+        Log.scrivi_log(f"Creato personaggio: {nuovo_pg.nome}, Classe: {classe_personaggio}, id: {nuovo_pg.id}, Oggetto iniziale: {oggetto_iniziale}")
 
         return redirect(url_for('gioco.index'))
 
+    # Primo accesso: mostra il form
     return render_template(
         'create_char.html',
-        classi=list(classi.keys()),
-        oggetti=list(oggetti.keys())
+        classi=list(classi_disponibili.keys()),
+        oggetti=list(oggetti_disponibili.keys())
     )
 
 
