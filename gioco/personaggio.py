@@ -1,43 +1,27 @@
-from dataclasses import dataclass, field
-import random
-import uuid
-# from gioco.basic import Basic
-# from utils.log import Log
-# from utils.messaggi import Messaggi
-import logging
-from marshmallow import Schema, fields, post_load
+import random, uuid
+from gioco.basic import Basic
+from utils.log import Log
+from utils.messaggi import Messaggi
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-# Ogni logger del logging ha un livello di soglia e i messaggi vengono 
+# serve per random.randint nei metodi attacca
 
 
-
-
-@dataclass 
-class Personaggio:
+class Personaggio(Basic):
     """
     Classe Padre per tutte classi
     Contiene le proprietà comuni a ogni classe (Mago, Ladro, Guerriero)
     """
-    # In una @dataclass, campo possono avere un dato di default oppure
-    # possono avere dei dati calcolati al momento della creazione dell'istanza tramite default_fatory
-    # lambda è una funzione anonima che viene chiamata nel momento di creazione di un nuovo oggetto
-    # in modo da generare il valore di default del campo id
-    # default_factory in pratica garantisce che ogni istanza abbia un propria UUID unico,
-    # senza dover doverlo passare manualmente al costruttore
-    # Evita il problema di valori mutabili di deafult condivisi tra tutte le istanze 
-    # (come succederebbe con una lista definita direttamente)
-    nome: str
-    id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    npc: bool = True  # Indica se il personaggio è un NPC
-    salute: int = 100
-    salute_max: int = 200
-    attacco_min: int = 5
-    attacco_max: int = 80
-    storico_danni_subiti:list[int] = field(default_factory=list)
-    livello:int = 1
-    destrezza:int = 15  # Caratteristica per la sistema d20
+    def __init__(self, nome: str, npc: bool = True) -> None:
+        self.id = str(uuid.uuid4())
+        self.nome = nome
+        self.salute = 100
+        self.salute_max = 200
+        self.attacco_min = 5
+        self.attacco_max = 80
+        self.storico_danni_subiti = []
+        self.livello = 1
+        self.destrezza = 15  # Caratteristica per la sistema d20
+        self.npc = npc  # Indica se il personaggio è un NPC
 
 
     def esegui_azione(self) -> bool:
@@ -48,12 +32,16 @@ class Personaggio:
             bool: True se il testo è superato, False altrimenti.
         """
         tiro = random.randint(1, 20)
-        successo = tiro <= self.destrezza
-        if successo:
-            logger.info(f"{self.nome} ha eseguito l'azione con successo!")
+        risultato = tiro <= self.destrezza
+        if risultato:
+            msg = f"{self.nome} ha eseguito l'azione con successo!"
+            Messaggi.add_to_messaggi(msg)
+            Log.scrivi_log(msg)
         else:
-            logger.info(f"{self.nome} ha fallito l'azione!")
-        return successo
+            msg = f"{self.nome} ha fallito l'azione!"
+            Messaggi.add_to_messaggi(msg)
+            Log.scrivi_log(msg)
+        return risultato
 
 
     def attacca(self, mod_ambiente: int = 0) -> int:
@@ -68,13 +56,17 @@ class Personaggio:
         Returns:
             int: danno inflitto all'avversario, 0 se l'attacco fallisce
         """
-        if not self.esegui_azione():
-            logger.info(f"{self.nome} tenta di attacare ma fallisce!")
+        if self.esegui_azione():
+            danno = random.randint(self.attacco_min, self.attacco_max) + mod_ambiente
+            msg = f"{self.nome} Attacca con successo e infligge {danno} danni!"
+            Messaggi.add_to_messaggi(msg)
+            Log.scrivi_log(msg)
+            return danno
+        else:
+            msg = f"{self.nome} Tenta di attaccare ma fallisce!"
+            Messaggi.add_to_messaggi(msg)
+            Log.scrivi_log(msg)
             return 0
-
-        danno = random.randint(self.attacco_min, self.attacco_max) + mod_ambiente
-        logger.info(f"{self.nome} attacco con successo e inflige {danno} danni")
-        return danno
 
     def subisci_danno(self, danno: int) -> None:
         """
