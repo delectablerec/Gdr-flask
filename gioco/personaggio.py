@@ -27,7 +27,7 @@ class Personaggio(Basic):
         classe derivata da personaggio.
 
         Args:
-            bersaglio (Personaggio): bersaglio dell'attacco
+            bersaglio (Personaggio): bersaglio dell'attacco.
             mod_ambiente (int): modificatore di attacco in base all'ambiente
 
         Returns:
