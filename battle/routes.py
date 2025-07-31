@@ -1,22 +1,23 @@
 from flask import redirect, render_template, session, url_for, request, flash
-import logging
-import random
-import os
 from flask_login import login_required
+
+import os
+import random
 from . import battle_bp
-from gioco.oggetto import Oggetto, TipoOggetto
 from gioco.missione import Missione
 from gioco.strategy import Strategia
 from gioco.inventario import Inventario
 from gioco.personaggio import Personaggio
+from gioco.oggetto import Oggetto, TipoOggetto
 from gioco.schemas.missione import MissioniSchema
 from gioco.schemas.inventario import InventarioSchema
 from gioco.schemas.personaggio import PersonaggioSchema
-from utils.helper import get_all_subclasses
 from characters.routes import load_char, get_owned_chars
+from utils.helper import get_all_subclasses
+from utils.salvataggio import Json
+from utils.log import get_logger
 from config import DATA_DIR_SAVE, DATA_DIR_INV, DATA_DIR_PGS
 from config import load_leaderboard, update_leaderboard
-from utils.salvataggio import Json
 
 path_save = os.path.join(
     DATA_DIR_SAVE, "salvataggio.json"
@@ -31,13 +32,27 @@ schema = PersonaggioSchema()
 schema_inv = InventarioSchema()
 punteggio_iniziale = 0
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger = get_logger(__name__)
+
+punteggio_iniziale = 0
 
 
 @battle_bp.route('/select_char', methods=['GET', 'POST'])
 @login_required
 def select_char():
+    """
+    Seleziona i personaggi per la battaglia.
+    Mostra una lista di personaggi disponibili e
+    consente di selezionarli per la battaglia.
+    Metodo GET: Mostra la lista dei personaggi disponibili.
+    Metodo POST: salva i personaggi selezionati, la missione corrente sul file
+        specifico e reindirizza alla battaglia automatica.
+
+    Returns:
+        Rendered template: 'select_char.html' con i personaggi disponibili
+            e la missione corrente o redirect alla battaglia automatica.
+
+    """
     # if request.method == 'POST':
     # prendo i dati da sessione:
     missione_corrente = Json.carica_dati(path_save)['missione']
@@ -193,6 +208,7 @@ def auto_battle():
                 (nemici_obj + personaggi_selezionati_obj)
             )
             txt = result[1]
+
             if txt:
                 save_data['messaggi_battaglia'].append(txt)
 
@@ -226,6 +242,7 @@ def auto_battle():
                         f"tenta di attaccare "
                         f"{bold(bersaglio.nome)} ma fallisce!"
                     )
+
 
                 bersaglio.subisci_danno(danno)
                 save_data['messaggi_battaglia'].append(msg)
@@ -281,6 +298,7 @@ def auto_battle():
                     "stati sconfitti! Vittoria!</span>"
                 )
 
+
         # update dei valori della leaderboard
         leaderboard_data["partite_giocate"] = partite_giocate
         leaderboard_data["partite_vinte"] = partite_vinte
@@ -307,7 +325,6 @@ def auto_battle():
                             Json.scrivi_dati(
                                 inv_path, InventarioSchema().dump(inventario)
                             )
-
         save_data['missione'] = MissioniSchema().dump(missione_obj)
         Json.scrivi_dati(path_save, save_data)
 
@@ -330,28 +347,32 @@ def auto_battle():
         return redirect(url_for('mission.select_mission'))
 
 
-def setup_battle():
+def setup_battle() -> tuple[Missione, list[Personaggio], list[Inventario]]:
     """
-    Fa il setup dei dati prendendoli dai file json data/ save, inventari,
-    personaggi
+    Crea il setup dei dati prendendoli dai file json
+    data/( save, inventari, personaggi)
     Deserializza i dati dai json e ritorna gli oggetti
 
     Returns:
-        Missione: La missione deserializzata con dentro i suoi campi la lista
-        dei nemici, l'ambiente, la lista degli inventari dei nemici e la lista
-        dei premi.
+        tuple:
+            Missione: La missione deserializzata con dentro i suoi campi
+                la lista dei nemici, l'ambiente, la lista degli inventari dei
+                nemici e la lista dei premi.
 
-        List[Personaggio]: La lista dei personaggi selezionati dei giocatori.
+            List[Personaggio]: La lista dei personaggi selezionati dei
+                giocatori.
 
-        List[Inventario]: La lista degli inventari dei giocatori.
+            List[Inventario]: La lista degli inventari dei giocatori.
     """
     # --- SETUP DATI ---
     save_data = Json.carica_dati(path_save)
     missione = save_data['missione']
+
     # print(f"MISSIONE DICT :{missione}")
     personaggi_selezionati = Json.carica_dati(path_save)[
         'personaggi_selezionati'
     ]
+
     # print(f"PERSONAGGI SELEZIONATI DICT :{personaggi_selezionati}")
 
     # Deserializzazione oggetti
@@ -360,6 +381,7 @@ def setup_battle():
     personaggi_selezionati_obj = personaggio_schema.load(
         personaggi_selezionati
     )
+
     # print(f"PERSONAGGI_OBJ : {personaggi_selezionati_obj}")
 
     # Carico gli inventari dei personaggi:
@@ -372,6 +394,7 @@ def setup_battle():
             inventario_pg_obj = inventario_schema.load(inventario_pg)
             inventari_pg_obj.append(inventario_pg_obj)
 
+
     # caricamento dati leaderboard user corrente
     user_id = str(session.get('_user_id', ''))
     user_leaderboard = load_leaderboard(user_id)
@@ -383,6 +406,9 @@ def setup_battle():
         missione_obj.inventari_nemici = nemici_casuali[1]
         print("INVENTARI NEMICI",missione_obj.inventari_nemici)
         save_data["nemici_generati"] = True
+
+
+    Json.scrivi_dati(path_save, save_data)
     Json.scrivi_dati(path_save, save_data)
 
     return (
@@ -464,14 +490,16 @@ def usa_inventario_automatico(
         result = strategia.uso_inventario_npc(pg.salute, inventario, ambiente)
 
         if result is not None:
-            print(f"Result: {result}")
+            # print(f"Result: {result}")
             value = result[0]
             tipo = result[1]
-            if tipo == 'TipoOggetto.BUFF':
+            print("TIPO", tipo)
+            tipo = getattr(TipoOggetto, tipo, None)
+            if tipo == TipoOggetto.BUFF:
                 bersaglio = None
                 txt = (f"{bold(pg.nome)} usa Medaglione su se stesso, ")
                 pg.attacco_max += value
-            elif tipo == "TipoOggetto.OFFENSIVO":
+            elif tipo == TipoOggetto.OFFENSIVO:
                 bersaglio = random.choice(bersagli)
 
                 txt = (
@@ -481,7 +509,7 @@ def usa_inventario_automatico(
                 )
 
                 bersaglio.salute += value
-            elif tipo == "TipoOggetto.RISTORATIVO":
+            elif tipo == TipoOggetto.RISTORATIVO:
                 bersaglio = None
                 txt = (f"{bold(pg.nome)} usa Pozione Curativa su se stesso ")
                 pg.salute += value
@@ -489,19 +517,31 @@ def usa_inventario_automatico(
                     pg.salute = pg.salute_max
                     txt += ", che torna al massimo della salute."
                 else:
-                    txt += f", recuperando <span class='text-success fw-bold'> {value}</span> HP."
-            logger.info(txt)
+                    txt += (
+                        f", recuperando <span class='text-success fw-bold'>"
+                        f" {value}</span> HP."
+                    )
         else:
             txt = f"{bold(pg.nome)} non utilizza oggetti in questo turno"
+        logger.info(str(txt))
     return value, txt
 
 
 def generate_random_enemy(
     number: int = 1
 ) -> list[tuple[Personaggio, Inventario]]:
-    """Genera randomicamente un nemico
+    """
+    Genera randomicamente dei nemici e il loro inventario sulla base della
+    quantità richiesta.
+    Utilizza le classi derivate da Personaggio e Oggetto per creare
+    istanze di nemici e oggetti casuali.
+
+    Args:
+        number (int): Numero di nemici da generare, default è 1.
+
     Returns:
-        Personaggio: Ritorna un personaggio non giocante istanziato
+        list[tuple[Personaggio, Inventario]]:
+            Una lista di tuple contenenti i nemici e i loro inventari.
     """
     nemici = []
     inventari_nemici = []
@@ -518,10 +558,8 @@ def generate_random_enemy(
         nemici.append(nemico_obj)
     return nemici, inventari_nemici
 
-# in ingresso lista di tutti i personaggi, e  sommo iniziativa + d20, ordino
-# in base a qst, mettendo gli id
 
-def ordine_iniziativa(tutti_personaggi):
+def ordine_iniziativa(tutti_personaggi: list[Personaggio]) -> list[str]:
     """
     Calcola l'iniziativa per ogni personaggio sommando il valore di iniziativa
     al tiro di un d20.
@@ -553,11 +591,15 @@ def assegna_premi(
     personaggi_selezionati: list[Personaggio],
     inventari: list[Inventario]
 ):
-    """Da chiamare a fine scontro in caso di vittoria per assegnare
+    """
+    Da chiamare a fine scontro in caso di vittoria per assegnare
     i premi della missione agli inventari dei personaggi
 
     Args:
         missione (Missione): La missione corrente
+        messaggi_battaglia (list[str]): Lista dei messaggi della battaglia
+        personaggi_selezionati (list[Personaggio]): Personaggi selezionati dai
+            giocatori
         inventari (list[Inventario]): Inventari dei personaggi giocanti
 
     Returns:
@@ -583,4 +625,26 @@ def assegna_premi(
 
 
 def bold(txt):
+    """
+    Rende il testo in ingresso in grassetto nella pagina html.
+
+    Args:
+        txt (str): Il testo da rendere in grassetto.
+
+    Returns:
+        str: Il testo formattato in grassetto.
+    """
     return f"<b>{txt}</b>"
+
+
+def rimuovi_bold(txt):
+    """
+    Rimuove i tag <b> e </b> dal testo.
+
+    Args:
+        txt (str): Il testo da cui rimuovere i tag bold.
+
+    Returns:
+        str: Il testo senza tag bold.
+    """
+    return txt.replace("<b>", "").replace("</b>", "")
