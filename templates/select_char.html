@@ -35,6 +35,29 @@
       {% endfor %}
     </div>
 
+    <!-- Selezione modalità battaglia -->
+    <div class="mb-4">
+      <h5 class="text-center mb-3">Scegli modalità di battaglia:</h5>
+      <div class="row g-2">
+        <div class="col-6">
+          <input type="radio" class="btn-check" name="battle_mode" id="auto_battle" value="auto" checked>
+          <label class="btn btn-outline-success w-100 h-100 d-flex flex-column justify-content-center" for="auto_battle">
+            <i class="bi bi-play-circle fs-2 mb-2"></i>
+            <strong>Battaglia Automatica</strong>
+            <small class="text-muted">Combattimento completamente automatico</small>
+          </label>
+        </div>
+        <div class="col-6">
+          <input type="radio" class="btn-check" name="battle_mode" id="full_battle" value="interactive">
+          <label class="btn btn-outline-warning w-100 h-100 d-flex flex-column justify-content-center" for="full_battle">
+            <i class="bi bi-controller fs-2 mb-2"></i>
+            <strong>Battaglia Interattiva</strong>
+            <small class="text-muted">Controlli le azioni dei tuoi personaggi</small>
+          </label>
+        </div>
+      </div>
+    </div>
+
     <button type="submit" class="btn btn-outline-primary btn-lg w-100">Vai alla battaglia</button>
     <a
       href="{{ url_for('home.index') }}"

@@ -1,0 +1,312 @@
+{% extends "layout.html" %}
+{% block title %}Battaglia Interattiva{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <!-- card personaggi del giocatore -->
+        <div class="col-md-3">
+            <div class="card shadow mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0 text-center">
+                        <i class="bi bi-emoji-smile-fill me-2"></i>
+                        Personaggi
+                    </h5>
+                </div>
+                <div
+                    class="card-body text-default"
+                    style="max-height: 500px; min-height: 500px; overflow-y: auto;">
+                    <ul class="list-group list-group-flush">
+                        {% for pg in personaggi %}
+                            <li class="list-group-item">
+                                <h6>
+                                    {{ pg.nome }}
+                                    {% if pg.sconfitto() %}
+                                        <span class="badge bg-danger ms-1">Morto</span>
+                                    {% else %}
+                                        <span class="badge bg-success ms-1">Vivo</span>
+                                    {% endif %}
+                                </h6>
+                                <p class="mb-1">Classe: {{ pg.classe }}</p>
+                                <p class="mb-1">Salute: {{ pg.salute }} / {{ pg.salute_max }}</p>
+                                <div class="progress">
+                                    <div
+                                        class="progress-bar {% if pg.salute > pg.salute_max / 2 %} bg-success {% elif pg.salute > pg.salute_max / 4 %} bg-warning {% else %} bg-danger {% endif %}"
+                                        role="progressbar"
+                                        style="width: {{ (pg.salute / pg.salute_max * 100) | round(0) }}%"
+                                        aria-valuenow="{{ pg.salute }}"
+                                        aria-valuemin="0"
+                                        aria-valuemax="{{ pg.salute_max }}">
+                                    </div>
+                                </div>
+                                <p class="mb-1">
+                                    Attacco: {{ pg.attacco_min }} - {{ pg.attacco_max }}
+                                </p>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">Nessun personaggio presente</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer bg-primary text-white">
+                    <h5 class="mb-0 text-center">
+                        In vita: {{ pc_vivi|length }}
+                    </h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- card log di battaglia e controlli -->
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0 text-center">
+                        - {{ missione.nome }} -
+                    </h5>
+                </div>
+                <div class="card-body border-dark p-0">
+                    <div
+                        id="log"
+                        class="p-3 text-center"
+                        style="
+                            max-height: 300px;
+                            overflow-y: auto;
+                            background-color: #f8f9fa;
+                        ">
+                        {% for log in messaggi %}
+                            <p class="mb-2" style="font-size: 1.1em">{{ log|safe }}</p>
+                        {% else %}
+                            <p class="text-muted">In attesa di eventi di combattimento...</p>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pannello di controllo per il giocatore -->
+                    {% if aspetta_azione_giocatore and not battaglia_finita %}
+                        <div class="p-3 bg-light border-top">
+                            <h6 class="text-center text-primary fw-bold mb-3">
+                                È il turno di {{ personaggio_turno_corrente.nome }}
+                            </h6>
+
+                            <!-- Form per attaccare -->
+                            {% if show_attack_form %}
+                                <div class="card mb-3">
+                                    <div class="card-header bg-danger text-white">
+                                        <h6 class="mb-0">Scegli il bersaglio da attaccare</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="POST">
+                                            <input type="hidden" name="action" value="attack">
+                                            <div class="list-group mb-3">
+                                                {% for nemico in nemici %}
+                                                    {% if not nemico.sconfitto() %}
+                                                        <label class="list-group-item list-group-item-action">
+                                                            <input type="radio" name="target_id" value="{{ nemico.id }}" class="form-check-input me-2" required>
+                                                            {{ nemico.nome }} ({{ nemico.salute }}/{{ nemico.salute_max }} HP)
+                                                        </label>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="bi bi-sword"></i> Attacca!
+                                                </button>
+                                                <a href="{{ url_for('battle.full_battle') }}" class="btn btn-secondary">Annulla</a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Form per selezione oggetto -->
+                            {% if show_item_selection %}
+                                <div class="card mb-3">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">Scegli un oggetto da usare</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if inventario_corrente and inventario_corrente.oggetti %}
+                                            <form method="POST">
+                                                <input type="hidden" name="action" value="select_item">
+                                                <div class="mb-3">
+                                                    <select name="item_id" class="form-select" required>
+                                                        <option value="">Seleziona un oggetto...</option>
+                                                        {% for oggetto in inventario_corrente.oggetti %}
+                                                            <option value="{{ oggetto.id }}">
+                                                                {{ oggetto.nome }} - {{ oggetto.descrizione }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="d-flex gap-2">
+                                                    <button type="submit" class="btn btn-info">Continua</button>
+                                                    <a href="{{ url_for('battle.full_battle') }}" class="btn btn-secondary">Annulla</a>
+                                                </div>
+                                            </form>
+                                        {% else %}
+                                            <p class="text-muted">Nessun oggetto disponibile nell'inventario.</p>
+                                            <a href="{{ url_for('battle.full_battle') }}" class="btn btn-secondary">Torna indietro</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Form per usare oggetto con bersaglio -->
+                            {% if show_item_target and selected_item %}
+                                <div class="card mb-3">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">Usa: {{ selected_item.nome }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-3">{{ selected_item.descrizione }}</p>
+                                        
+                                        <form method="POST">
+                                            <input type="hidden" name="action" value="use_item">
+                                            <input type="hidden" name="item_id" value="{{ selected_item.id }}">
+                                            
+                                            {% if item_needs_target %}
+                                                <div class="mb-3">
+                                                    <label class="form-label">Scegli bersaglio:</label>
+                                                    <div class="list-group mb-3">
+                                                        {% for nemico in nemici %}
+                                                            {% if not nemico.sconfitto() %}
+                                                                <label class="list-group-item list-group-item-action">
+                                                                    <input type="radio" name="use_target_id" value="{{ nemico.id }}" class="form-check-input me-2" required>
+                                                                    {{ nemico.nome }} ({{ nemico.salute }}/{{ nemico.salute_max }} HP)
+                                                                </label>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-info">
+                                                    <i class="bi bi-bag"></i> Usa Oggetto!
+                                                </button>
+                                                <a href="{{ url_for('battle.full_battle') }}" class="btn btn-secondary">Annulla</a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Bottoni azione principali -->
+                            {% if not show_attack_form and not show_item_selection and not show_item_target %}
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <form method="POST" class="d-inline">
+                                            <input type="hidden" name="action" value="show_attack">
+                                            <button type="submit" class="btn btn-danger w-100">
+                                                <i class="bi bi-sword"></i> Attacca
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="col-6">
+                                        <form method="POST" class="d-inline">
+                                            <input type="hidden" name="action" value="show_items">
+                                            <button type="submit" class="btn btn-info w-100">
+                                                <i class="bi bi-bag"></i> Usa Oggetto
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% elif not aspetta_azione_giocatore and not battaglia_finita %}
+                        <div class="p-3 text-center">
+                            <p class="text-muted">Turno dei nemici in corso...</p>
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Caricamento...</span>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if battaglia_finita %}
+                        <div class="p-3 text-center">
+                            <a href="{{ url_for('home.index') }}" class="btn btn-warning btn-lg">
+                                Torna al menu
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-footer bg-dark text-white">
+                    <h5 class="mb-0 text-center">
+                        {% if battaglia_finita %}
+                            {% if vittoria %}
+                                <i class="bi bi-emoji-sunglasses-fill"></i>
+                                Vittoria
+                                <i class="bi bi-emoji-sunglasses-fill"></i>
+                            {% else %}
+                                <i class="bi bi-emoji-dizzy-fill"></i>
+                                Sconfitta
+                                <i class="bi bi-emoji-dizzy-fill"></i>
+                            {% endif %}
+                        {% else %}
+                            <i class="bi bi-question-circle"></i>
+                            Battaglia in corso
+                            <i class="bi bi-question-circle"></i>
+                        {% endif %}
+                    </h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- card nemici -->
+        <div class="col-md-3">
+            <div class="card shadow mb-3">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0 text-center">
+                        <i class="bi bi-emoji-angry-fill me-2"></i>
+                        Nemici
+                    </h5>
+                </div>
+                <div
+                    class="card-body text-default"
+                    style="max-height: 500px; min-height: 500px; overflow-y: auto;">
+                    <ul class="list-group list-group-flush">
+                        {% for n in nemici %}
+                            <li class="list-group-item">
+                                <h6>
+                                    {{ n.nome }}
+                                    {% if n.sconfitto() %}
+                                        <span class="badge bg-danger ms-1">Morto</span>
+                                    {% else %}
+                                        <span class="badge bg-success ms-1">Vivo</span>
+                                    {% endif %}
+                                </h6>
+                                <p class="mb-1">Classe: {{ n.classe }}</p>
+                                <p class="mb-1">Salute: {{ n.salute }} / {{ n.salute_max }}</p>
+                                <div class="progress">
+                                    <div
+                                        class="progress-bar {% if n.salute > n.salute_max / 2 %} bg-success {% elif n.salute > n.salute_max / 4 %} bg-warning {% else %} bg-danger {% endif %}"
+                                        role="progressbar"
+                                        style="width: {{ (n.salute / n.salute_max * 100) | round(0) }}%"
+                                        aria-valuenow="{{ n.salute }}"
+                                        aria-valuemin="0"
+                                        aria-valuemax="{{ n.salute_max }}">
+                                    </div>
+                                </div>
+                                <p class="mb-1">
+                                    Attacco: {{ n.attacco_min }} - {{ n.attacco_max }}
+                                </p>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">Nessun nemico presente</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer bg-primary text-white">
+                    <h5 class="mb-0 text-center">
+                        In vita: {{ npc_vivi|length }}
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if not battaglia_finita and not aspetta_azione_giocatore %}
+        <meta http-equiv="refresh" content="2" />
+    {% endif %}
+</div>
+
+{% endblock content %}
