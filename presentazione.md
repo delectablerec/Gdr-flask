@@ -291,104 +291,139 @@ Questa sezione del progetto gestisce la parte **backend relativa agli utenti**, 
 
 ## Funzionalità principali
 
-- **Gestione utenti**: registrazione, login/logout, area personale.
-  - La registrazione richiede nome utente, indirizzo email, password e conferma password.
-  - Login/logout per l'accesso al sistema, con funzionalità differenti in base al tipo di utente.
-  - L'area personale permette di:
-    - Creare personaggi (nome, classe: Mago, Ladro, Guerriero) con un oggetto a scelta come inventario iniziale.
-    - Visualizzare tutti i propri personaggi e, per ognuno:
-      - Visualizzare l'inventario, aggiungere o eliminare oggetti.
-      - Osservare i dettagli del personaggio.
-      - Modificare il nome del personaggio.
-      - Eliminare il personaggio.
-    - Modificare le informazioni dell'utente.
-    - Caricare crediti (solo per utenti di tipo Admin).
-    - Eliminare l'account utente.
+- **Gestione utenti**: registrazione, login/logout e area personale.
+  - La registrazione richiede nome utente, email, password e conferma password.
+  - Il login/logout gestisce l’accesso al sistema con privilegi differenti in base al tipo di utente.
+  - L’area personale permette di:
+    - Creare personaggi (nome, classe: Mago, Ladro, Guerriero) con inventario iniziale.
+    - Visualizzare e gestire i propri personaggi (inventario, dettagli, modifiche, eliminazione).
+    - Aggiornare le informazioni personali.
+    - Caricare crediti (solo Admin).
+    - Eliminare l’account utente.
 
 - **Ruoli e privilegi**:
   - **Utente standard (Player)**: può giocare, completare missioni e interagire con NPC.
   - **Admin**: oltre ai privilegi del Player, può:
     - Caricare crediti sugli account degli utenti.
-    - Modificare lo stato di un utente da Player a Admin.
+    - Promuovere utenti da Player a Admin.
 
 - **Sicurezza**:
-  - Password criptate tramite hashing (`werkzeug.security` `generate_password_hash` e `check_password_hash`).
-  - Protezione delle route tramite decoratori (`@login_required`, `@admin_required`).
-    Il menu principale del gioco è protetto e accessibile solo agli utenti registrati.
+  - Password protette tramite hashing (`generate_password_hash` e `check_password_hash` di Werkzeug).
+  - Rotte protette con decoratori (`@login_required`, `@admin_required`).
+  - Menu principale accessibile solo agli utenti autenticati.
 
-- **Struttura dati**:
-  Abbiamo gestito i dati utenti tramite SQLAlchemy per facilitare la manipolazione del database invece di SQL standard
-  per salvataggi. SQLAlchemy ci ha permesso di definire modelli orientati agli oggetti, gestire automaticamente le
-  relazioni tra tabelle e ridurre significativamente il codice boilerplate rispetto alle query SQL raw. Inoltre offre
-  protezione automatica contro SQL injection e migliore portabilità tra diversi database engine. Per la logica di gioco
-  abbiamo invece utilizzato il salvataggio con file JSON per garantire flessibilità nella struttura dei dati e semplicità
-  nelle operazioni di lettura/scrittura delle sessioni di gioco.
+---
 
-  - Modelli principali:
-    ```python
-    class UserRole(enum.Enum):
-        PLAYER = "PLAYER"
-        ADMIN = "ADMIN"
+## Struttura dati e ORM SQLAlchemy
 
-    class User(UserMixin, db.Model):
-        id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-        nome = db.Column(db.String(80), nullable=False)
-        email = db.Column(db.String(80), unique=True, nullable=False)
-        password_hash = db.Column(db.String(128), nullable=False)
-        crediti = db.Column(db.Float, nullable=False)
-        ruolo = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.PLAYER)
-        character_ids = db.Column(
-            JSON,
-            nullable=False,
-            default=list
-        )
+Abbiamo scelto **SQLAlchemy** come ORM (Object Relational Mapper) al posto delle query SQL tradizionali per gestire i dati utente.  
+Questa scelta ha portato vantaggi significativi in termini di **sicurezza**, **manutenibilità** e **astrazione dal database**.
 
-        def is_admin(self):
-            return self.ruolo == UserRole.ADMIN
+### Vantaggi principali di SQLAlchemy
 
-        def is_player(self):
-            return self.ruolo == UserRole.PLAYER
+1. **Approccio orientato agli oggetti**  
+   Permette di manipolare i dati come oggetti Python anziché tramite query testuali.  
+   Le operazioni CRUD diventano semplici metodi (`db.session.add(user)`, `user.email`, ecc.), rendendo il codice più leggibile e pulito.
 
-        def has_role(self, role: str):
-            return self.ruolo == UserRole[role]
-    ```
+2. **Astrazione dal database**  
+   SQLAlchemy funziona con diversi motori (SQLite, MySQL, PostgreSQL, ecc.) senza modifiche al codice.  
+   Questo aumenta la **portabilità** e facilita la manutenzione a lungo termine.
 
-## Esempi d'uso
+3. **Sicurezza integrata**  
+   Genera query automaticamente protette contro **SQL injection** e gestisce in modo sicuro transazioni e sessioni.
 
-- **Registrazione**:
-    ```
-    Nome utente: Antonio
-    Email: antonio@gamer.it
-    Password: 1234
-    Conferma password: 1234
+4. **Gestione semplificata delle relazioni**  
+   Gestisce facilmente relazioni tra tabelle (one-to-many, many-to-many) senza dover scrivere JOIN manuali.
 
-    Conferma e procedi
-    ```
+5. **Codice più pulito e meno ridondante**  
+   I modelli rappresentano le tabelle e includono vincoli, relazioni e logica personalizzata.  
+   Questo riduce il codice duplicato e migliora la scalabilità del backend.
 
-- **Login**:
-    ```
-    Email: antonio@gamer.it
-    Password: 1234
-    ```
+6. **Integrazione naturale con Flask** 
+   Con `Flask-SQLAlchemy` e `Flask-Login`, la gestione delle sessioni utente, dei ruoli e dell’autenticazione è diretta e sicura.
+
+### Esempio pratico
+
+**SQL classico:**
+```python
+cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+user = cursor.fetchone()
+```
+
+**SQLAlchemy:**
+
+```python
+user = User.query.filter_by(email=email).first()
+```
+
+Il secondo approccio è più leggibile, sicuro e integrato con la logica dell’applicazione.
+
+---
+
+### Modelli principali
+
+```python
+class UserRole(enum.Enum):
+    PLAYER = "PLAYER"
+    ADMIN = "ADMIN"
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nome = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    crediti = db.Column(db.Float, nullable=False)
+    ruolo = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.PLAYER)
+    character_ids = db.Column(JSON, nullable=False, default=list)
+
+    def is_admin(self):
+        return self.ruolo == UserRole.ADMIN
+
+    def is_player(self):
+        return self.ruolo == UserRole.PLAYER
+
+    def has_role(self, role: str):
+        return self.ruolo == UserRole[role]
+```
+
+---
+
+## Esempi d’uso
+
+* **Registrazione:**
+
+  ```
+  Nome utente: Antonio
+  Email: antonio@gamer.it
+  Password: 1234
+  Conferma password: 1234
+  ```
+
+* **Login:**
+
+  ```
+  Email: antonio@gamer.it
+  Password: 1234
+  ```
+
+---
 
 ## Bug noti / Limiti
 
 * Sistema di **reset password** ancora da implementare.
-* Miglioramenti possibili nella sicurezza delle credenziali (lunghezza password, suggerimenti di password sicure).
-* Attualmente le battaglie sono automatizzate; si potrebbe aggiungere una modalità manuale.
-* Aggiungere un nuovo tipo di utente `Developer` con accesso a una sezione `Statistics` per analisi utenti e data analytics,
- usando variabili chiave come livello, numero_battaglie, numero_vittorie, tempo_totale_giocato, spesa_mensile, 
- tipo_dispositivo, cluster_comportamentale per creare dashboard interattive e report dettagliati sui comportamenti dei giocatori.
+* Miglioramenti possibili nella sicurezza (password più robuste, suggerimenti, politiche di complessità).
+* Battaglie attualmente automatizzate: aggiungere modalità manuale.
+* Possibilità futura di introdurre un ruolo `Developer` con accesso a una sezione **Statistics** per analisi utenti (livello, vittorie, tempo giocato, cluster comportamentali, ecc.).
 
-### Update futuri
+---
 
-* Gestione avanzata dei privilegi per diversi tipi di Admin.
-* Logging delle attività degli utenti.
-* Integrazione con interfaccia web per gestione utenti da Admin.
-* Possibilità di aggiungere ruoli personalizzati dinamicamente.
-* Possibilità di fare giocare più personaggi contemporaneamente (funzionalità asincrona). La versione attuale permette 
-l'aggiornamento automatico del singolo utente. Una versione asincrona permetterebbe di avere un aggiornamento istantaneo 
-per tutti i giocatori simultaneamente.
+## Update futuri
+
+* Gestione avanzata dei privilegi per più tipi di Admin.
+* Logging delle attività utente.
+* Integrazione con interfaccia web per la gestione da Admin.
+* Creazione dinamica di ruoli personalizzati.
+* Possibilità di far giocare più personaggi contemporaneamente (funzionalità asincrona).
 
 # 5. Transizione a Flask: dalla console all'applicazione web - Enrico Maddaloni
 
